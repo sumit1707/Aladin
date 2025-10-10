@@ -33,8 +33,8 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-400/15 via-green-500/5 to-transparent"></div>
 
       <div className="w-full flex items-center justify-center relative z-10">
-        <div className="flex flex-row items-start justify-center gap-16 p-8 max-w-5xl mx-auto -mt-12">
-          <div className="relative max-w-xs flex-shrink-0">
+        <div className="flex flex-row items-center justify-center gap-16 p-8 max-w-5xl mx-auto -mt-20 -ml-16">
+          <div className="relative max-w-xs flex-shrink-0 -mt-8">
             <img
               src="/image copy.png"
               alt="Genie"
