@@ -34,11 +34,11 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
 
       <div className="w-full flex items-center justify-center relative z-10">
         <div className="flex flex-row items-center justify-center gap-56 p-8 max-w-7xl mx-auto">
-          <div className="relative max-w-xs flex-shrink-0">
+          <div className="relative max-w-sm flex-shrink-0">
             <img
               src="/image copy.png"
               alt="Genie"
-              className="w-full h-auto object-contain animate-float drop-shadow-2xl"
+              className="w-full h-auto object-contain animate-float drop-shadow-2xl scale-115"
             />
             <div className="text-center mt-4">
               <h2 className="text-lg font-bold mb-1 tracking-wide text-emerald-400">
@@ -48,7 +48,7 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
             </div>
           </div>
 
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-lg scale-115">
             <div className="text-center mb-6">
               <h1 className="text-3xl font-bold mb-2" style={{ color: '#D4AF37' }}>Travel Planner</h1>
               <p className="text-emerald-300 text-sm">AI-Powered Trip Planning</p>
