@@ -33,27 +33,25 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-400/15 via-green-500/5 to-transparent"></div>
 
       <div className="w-full flex items-center justify-center relative z-10">
-        <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-br from-black/30 via-green-950/20 to-transparent">
-          <div className="relative max-w-sm">
+        <div className="flex flex-row items-center justify-center gap-12 p-8 max-w-5xl mx-auto">
+          <div className="relative max-w-xs flex-shrink-0">
             <img
               src="/image copy.png"
               alt="Genie"
               className="w-full h-auto object-contain animate-float drop-shadow-2xl"
             />
-            <div className="text-center mt-6">
-              <h2 className="text-xl font-bold mb-2 tracking-wide text-emerald-400">
+            <div className="text-center mt-4">
+              <h2 className="text-lg font-bold mb-1 tracking-wide text-emerald-400">
                 Welcome to Genie House
               </h2>
-              <p className="text-sm text-emerald-300">Plan your trip in a snap</p>
+              <p className="text-xs text-emerald-300">Plan your trip in a snap</p>
             </div>
           </div>
-        </div>
 
-        <div className="flex-1 flex items-center justify-center p-8">
-          <div className="w-full max-w-md -mt-16">
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold mb-2" style={{ color: '#D4AF37' }}>Travel Planner</h1>
-              <p className="text-emerald-300">AI-Powered Trip Planning</p>
+          <div className="w-full max-w-md">
+            <div className="text-center mb-6">
+              <h1 className="text-3xl font-bold mb-2" style={{ color: '#D4AF37' }}>Travel Planner</h1>
+              <p className="text-emerald-300 text-sm">AI-Powered Trip Planning</p>
             </div>
 
             <div className="bg-emerald-900/30 backdrop-blur-md border-2 border-emerald-500/40 rounded-2xl p-8 shadow-2xl">
