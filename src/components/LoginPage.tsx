@@ -134,7 +134,7 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-emerald-500/20 via-emerald-400/30 to-emerald-500/20 backdrop-blur-sm border-t border-emerald-400/40 py-4 z-20">
+      <div className="absolute bottom-0 left-0 right-0 py-4 z-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
             <div className="feature-item">
