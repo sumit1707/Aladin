@@ -33,15 +33,15 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-400/15 via-green-500/5 to-transparent"></div>
 
       <div className="w-full flex items-center justify-center relative z-10">
-        <div className="flex-1 flex items-center justify-end p-8 pr-12 bg-gradient-to-br from-black/30 via-green-950/20 to-transparent">
-          <div className="relative max-w-lg">
+        <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-br from-black/30 via-green-950/20 to-transparent">
+          <div className="relative max-w-sm">
             <img
               src="/image copy.png"
               alt="Genie"
               className="w-full h-auto object-contain animate-float drop-shadow-2xl"
             />
-            <div className="text-center mt-8">
-              <h2 className="text-2xl font-bold mb-2 tracking-wide text-emerald-400">
+            <div className="text-center mt-6">
+              <h2 className="text-xl font-bold mb-2 tracking-wide text-emerald-400">
                 Welcome to Genie House
               </h2>
               <p className="text-sm text-emerald-300">Plan your trip in a snap</p>
