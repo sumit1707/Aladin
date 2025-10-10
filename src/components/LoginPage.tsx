@@ -33,8 +33,8 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-400/15 via-green-500/5 to-transparent"></div>
 
       <div className="w-full flex items-center justify-center relative z-10">
-        <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-br from-black/30 via-green-950/20 to-transparent">
-          <div className="relative max-w-2xl">
+        <div className="flex-1 flex items-center justify-start p-8 pl-16 bg-gradient-to-br from-black/30 via-green-950/20 to-transparent">
+          <div className="relative max-w-xl">
             <img
               src="/image copy.png"
               alt="Genie"
@@ -49,7 +49,7 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
           </div>
         </div>
 
-        <div className="flex-1 flex items-center justify-center p-8">
+        <div className="flex-1 flex items-center justify-start p-8 pl-24">
           <div className="w-full max-w-md -mt-16">
             <div className="text-center mb-8">
               <h1 className="text-4xl font-bold mb-2" style={{ color: '#D4AF37' }}>Travel Planner</h1>
