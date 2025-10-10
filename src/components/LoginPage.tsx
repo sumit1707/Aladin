@@ -134,6 +134,29 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
         </div>
       </div>
 
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-emerald-500/20 via-emerald-400/30 to-emerald-500/20 backdrop-blur-sm border-t border-emerald-400/40 py-4 z-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+            <div className="feature-item">
+              <div className="text-emerald-300 font-semibold text-sm">Customized Itinerary</div>
+              <div className="text-emerald-400/70 text-xs mt-1">Tailored to your preferences</div>
+            </div>
+            <div className="feature-item">
+              <div className="text-emerald-300 font-semibold text-sm">Budget-Friendly Plans</div>
+              <div className="text-emerald-400/70 text-xs mt-1">Plans that fit your budget</div>
+            </div>
+            <div className="feature-item">
+              <div className="text-emerald-300 font-semibold text-sm">Time-Optimized</div>
+              <div className="text-emerald-400/70 text-xs mt-1">Perfect for your schedule</div>
+            </div>
+            <div className="feature-item">
+              <div className="text-emerald-300 font-semibold text-sm">Your Recommendations</div>
+              <div className="text-emerald-400/70 text-xs mt-1">We value your input</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <style>{`
         @keyframes float {
           0%, 100% {
@@ -145,6 +168,27 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
         }
         .animate-float {
           animation: float 4s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+          0% {
+            background-position: -1000px 0;
+          }
+          100% {
+            background-position: 1000px 0;
+          }
+        }
+        .feature-item {
+          position: relative;
+          animation: shimmer 3s infinite linear;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(16, 185, 129, 0.1) 50%,
+            transparent 100%
+          );
+          background-size: 1000px 100%;
+          padding: 8px;
+          border-radius: 8px;
         }
       `}</style>
     </div>
