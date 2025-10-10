@@ -51,16 +51,16 @@ export default function ItineraryView({
   };
 
   return (
-    <div className="w-full max-w-5xl">
-      <div className="bg-black/40 backdrop-blur-md border-2 border-emerald-500 rounded-xl shadow-lg shadow-emerald-500/20 p-6 mb-6">
-        <div className="flex items-center justify-between mb-4">
+    <div className="w-full max-w-5xl max-h-[95vh] overflow-y-auto">
+      <div className="bg-black/40 backdrop-blur-md border-2 border-emerald-500 rounded-xl shadow-lg shadow-emerald-500/20 p-4 mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-3xl font-bold text-emerald-400">{destinationName} Itinerary</h2>
-            <p className="text-emerald-300 mt-1">{itinerary.length} days of adventure</p>
+            <h2 className="text-2xl font-bold text-emerald-400">{destinationName} Itinerary</h2>
+            <p className="text-emerald-300 text-sm mt-1">{itinerary.length} days of adventure</p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-emerald-300">Total Estimated Cost</p>
-            <p className="text-3xl font-bold text-emerald-400">₹{totalCost.toLocaleString('en-IN')}</p>
+            <p className="text-xs text-emerald-300">Total Estimated Cost</p>
+            <p className="text-2xl font-bold text-emerald-400">₹{totalCost.toLocaleString('en-IN')}</p>
             <p className="text-xs text-emerald-400/70">per person</p>
           </div>
         </div>

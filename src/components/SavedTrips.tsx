@@ -102,11 +102,11 @@ export default function SavedTrips({ onBack, onViewTrip }: SavedTripsProps) {
   }
 
   return (
-    <div className="w-full max-w-5xl">
-      <div className="bg-black/40 backdrop-blur-md border-2 border-emerald-500 rounded-xl shadow-lg shadow-emerald-500/20 p-6 mb-6">
-        <div className="flex items-center justify-between mb-4">
+    <div className="w-full max-w-5xl max-h-[95vh] overflow-y-auto">
+      <div className="bg-black/40 backdrop-blur-md border-2 border-emerald-500 rounded-xl shadow-lg shadow-emerald-500/20 p-4 mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-3xl font-bold text-emerald-400">My Saved Trips</h2>
+            <h2 className="text-2xl font-bold text-emerald-400">My Saved Trips</h2>
             <p className="text-emerald-300 mt-1">{trips.length} saved {trips.length === 1 ? 'trip' : 'trips'}</p>
           </div>
           <button

@@ -58,15 +58,15 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gradient-to-br from-black/60 via-emerald-950/40 to-black/60 backdrop-blur-xl border-2 border-emerald-400/50 rounded-3xl shadow-2xl shadow-emerald-500/40 p-10 max-w-3xl w-full relative overflow-hidden">
+    <form onSubmit={handleSubmit} className="bg-gradient-to-br from-black/60 via-emerald-950/40 to-black/60 backdrop-blur-xl border-2 border-emerald-400/50 rounded-3xl shadow-2xl shadow-emerald-500/40 p-6 max-w-4xl w-full relative overflow-y-auto max-h-[95vh]">
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-emerald-500/5 pointer-events-none"></div>
       <div className="relative z-10">
-      <div className="text-center mb-10">
-        <h1 className="text-5xl font-black bg-gradient-to-r from-emerald-400 via-emerald-300 to-emerald-400 bg-clip-text text-transparent mb-3 drop-shadow-lg animate-pulse">Plan Your Perfect Trip</h1>
-        <p className="text-emerald-300/80 text-sm font-light tracking-wide">Let AI craft your dream vacation</p>
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-black bg-gradient-to-r from-emerald-400 via-emerald-300 to-emerald-400 bg-clip-text text-transparent mb-2 drop-shadow-lg animate-pulse">Plan Your Perfect Trip</h1>
+        <p className="text-emerald-300/80 text-xs font-light tracking-wide">Let AI craft your dream vacation</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-emerald-300 mb-2">
             Starting from (City) <span className="text-red-500">*</span>
@@ -129,7 +129,7 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-4">
         <label className="block text-sm font-medium text-emerald-300 mb-3">
           Group type <span className="text-red-500">*</span>
         </label>
@@ -151,7 +151,7 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
         {errors.groupType && <p className="text-red-500 text-xs mt-1">{errors.groupType}</p>}
       </div>
 
-      <div className="mt-6">
+      <div className="mt-4">
         <label className="block text-sm font-medium text-emerald-300 mb-3">
           Destination preference <span className="text-red-500">*</span>
         </label>
@@ -173,7 +173,7 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
         {errors.domesticOrIntl && <p className="text-red-500 text-xs mt-1">{errors.domesticOrIntl}</p>}
       </div>
 
-      <div className="mt-6">
+      <div className="mt-4">
         <label className="block text-sm font-medium text-emerald-300 mb-3">
           Preferred type <span className="text-red-500">*</span>
         </label>
@@ -193,7 +193,7 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
         {errors.theme && <p className="text-red-500 text-xs mt-1">{errors.theme}</p>}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
           <label className="block text-sm font-medium text-emerald-300 mb-2">
             Mood <span className="text-red-500">*</span>
@@ -229,7 +229,7 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-4">
         <label className="block text-sm font-medium text-emerald-300 mb-3">
           How do you want to travel? <span className="text-red-500">*</span>
         </label>
@@ -251,7 +251,7 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
         {errors.travelMode && <p className="text-red-500 text-xs mt-1">{errors.travelMode}</p>}
       </div>
 
-      <div className="mt-6">
+      <div className="mt-4">
         <label className="flex items-center space-x-2 cursor-pointer">
           <input
             type="checkbox"
@@ -266,7 +266,7 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full mt-10 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600 hover:from-emerald-500 hover:via-emerald-600 hover:to-emerald-700 text-white py-4 px-8 rounded-2xl font-bold text-lg tracking-wide transition-all transform hover:scale-[1.05] hover:shadow-2xl hover:shadow-emerald-500/60 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-xl shadow-emerald-500/50 relative overflow-hidden group"
+        className="w-full mt-6 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600 hover:from-emerald-500 hover:via-emerald-600 hover:to-emerald-700 text-white py-3 px-6 rounded-2xl font-bold text-base tracking-wide transition-all transform hover:scale-[1.05] hover:shadow-2xl hover:shadow-emerald-500/60 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-xl shadow-emerald-500/50 relative overflow-hidden group"
       >
         <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></span>
         <span className="relative z-10 flex items-center justify-center gap-3">

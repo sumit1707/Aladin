@@ -9,9 +9,9 @@ interface DestinationCardsProps {
 
 export default function DestinationCards({ options, onSelect, onBack }: DestinationCardsProps) {
   return (
-    <div className="w-full max-w-6xl">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-emerald-400">Recommended Destinations</h2>
+    <div className="w-full max-w-6xl max-h-[95vh] overflow-y-auto px-2">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold text-emerald-400">Recommended Destinations</h2>
         {onBack && (
           <button
             onClick={onBack}
@@ -22,7 +22,7 @@ export default function DestinationCards({ options, onSelect, onBack }: Destinat
           </button>
         )}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {options.map((option, index) => (
           <div key={option.id} className="bg-black/40 backdrop-blur-md border-2 border-emerald-500 rounded-xl shadow-lg shadow-emerald-500/20 overflow-hidden hover:shadow-xl hover:shadow-emerald-500/30 transition-all">
             <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 p-4 text-white">
