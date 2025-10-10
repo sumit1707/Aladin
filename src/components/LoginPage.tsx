@@ -48,13 +48,13 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
             </div>
           </div>
 
-          <div className="w-full max-w-lg scale-115">
-            <div className="text-center mb-6">
+          <div className="w-full max-w-lg scale-115 -translate-y-12">
+            <div className="text-center mb-6 scale-125">
               <h1 className="text-3xl font-bold mb-2" style={{ color: '#D4AF37' }}>Travel Planner</h1>
               <p className="text-emerald-300 text-sm">AI-Powered Trip Planning</p>
             </div>
 
-            <div className="bg-emerald-900/30 backdrop-blur-md border-2 border-emerald-500/40 rounded-2xl p-8 shadow-2xl">
+            <div className="bg-emerald-900/30 backdrop-blur-md border-2 border-emerald-500/40 rounded-2xl p-8 shadow-2xl scale-125">
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <div className="relative">
