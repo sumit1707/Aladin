@@ -138,20 +138,20 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
             <div className="feature-item">
-              <div className="text-emerald-300 font-semibold text-sm">Customized Itinerary</div>
-              <div className="text-emerald-400/70 text-xs mt-1">Tailored to your preferences</div>
+              <div className="text-emerald-300 font-semibold text-base">Customized Itinerary</div>
+              <div className="text-emerald-400/80 text-sm mt-1">Tailored to your preferences</div>
             </div>
             <div className="feature-item">
-              <div className="text-emerald-300 font-semibold text-sm">Budget-Friendly Plans</div>
-              <div className="text-emerald-400/70 text-xs mt-1">Plans that fit your budget</div>
+              <div className="text-emerald-300 font-semibold text-base">Budget-Friendly Plans</div>
+              <div className="text-emerald-400/80 text-sm mt-1">Plans that fit your budget</div>
             </div>
             <div className="feature-item">
-              <div className="text-emerald-300 font-semibold text-sm">Time-Optimized</div>
-              <div className="text-emerald-400/70 text-xs mt-1">Perfect for your schedule</div>
+              <div className="text-emerald-300 font-semibold text-base">Time-Optimized</div>
+              <div className="text-emerald-400/80 text-sm mt-1">Perfect for your schedule</div>
             </div>
             <div className="feature-item">
-              <div className="text-emerald-300 font-semibold text-sm">Your Recommendations</div>
-              <div className="text-emerald-400/70 text-xs mt-1">We value your input</div>
+              <div className="text-emerald-300 font-semibold text-base">Your Recommendations</div>
+              <div className="text-emerald-400/80 text-sm mt-1">We value your input</div>
             </div>
           </div>
         </div>
