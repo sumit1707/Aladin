@@ -78,6 +78,12 @@ const generateDestinationPrompt = (formData: TripFormData): string => {
     'Solo': 'adventure, party, or backpacking spots'
   };
 
+  const budgetRange = formData.budget === 'Budget-friendly (Under ₹20k)'
+    ? { max: 20000, label: 'Under ₹20,000' }
+    : formData.budget === 'Mid-range (₹20k-₹50k)'
+    ? { max: 50000, label: '₹20,000 to ₹50,000' }
+    : { max: 250000, label: '₹50,000 to ₹2,50,000' };
+
   return `🧩 INPUTS:
 - origin_city: ${formData.startLocation}
 - travel_month: ${formData.month}
@@ -86,10 +92,17 @@ const generateDestinationPrompt = (formData: TripFormData): string => {
 - preferred_destination_type: ${formData.theme.join(', ')}
 - mood: ${formData.mood}
 - travel_scope: ${travelScope}
+- budget_per_person: ${formData.budget} (MAXIMUM: ₹${budgetRange.max} per person)
 
 🎯 OBJECTIVE:
-Generate the Top 5 travel destinations that best match the given inputs.
-For each, include detailed yet concise travel info — budget, weather, ideal duration, travel time, and video exploration links.
+Generate travel destinations that STRICTLY MATCH the given budget constraint.
+CRITICAL: Only suggest destinations where the TOTAL cost per person is LESS THAN OR EQUAL TO ₹${budgetRange.max}.
+- If you can find 5 destinations within budget, return 5
+- If only 3 destinations fit the budget, return only those 3
+- If only 1 destination fits, return only 1
+- If NO destinations fit within the budget, return an empty array with a message explaining no destinations are available
+
+For each destination, include detailed yet concise travel info — budget, weather, ideal duration, travel time, and video exploration links.
 
 ⚙️ DESTINATION SELECTION RULES:
 
@@ -110,12 +123,20 @@ Always include weather for ${formData.month} with temperature range (°C) and ge
 Avoid suggesting destinations with unsafe/extreme weather for that month.
 If exact data unavailable, mention "typical for ${formData.month} based on climate trends".
 
-💰 Budget Logic:
-Provide realistic INR budget range (₹low – ₹high) for total trip cost (travel + hotel + food + key activities).
-Short local trip: ₹10,000–₹20,000
-Longer national: ₹25,000–₹50,000
-International (Asia): ₹50,000–₹1,20,000
-Luxury international (Europe): ₹1.2L–₹2.5L
+💰 Budget Logic (CRITICAL - MUST FOLLOW):
+User's maximum budget per person: ₹${budgetRange.max}
+STRICT RULE: The "total_per_person" in your response MUST be ≤ ₹${budgetRange.max}
+
+DO NOT suggest destinations that exceed this budget.
+Calculate realistic total cost including:
+- Stay cost (hotels/accommodation for ${formData.days} days)
+- Food cost (meals for ${formData.days} days)
+- Transport cost (based on ${formData.travelMode} from ${formData.startLocation})
+- Activities cost (entry fees, tours)
+
+If a destination's TOTAL cost exceeds ₹${budgetRange.max}, DO NOT include it in your response.
+If you cannot find enough destinations within budget, return fewer than 5 destinations.
+Quality over quantity - only suggest destinations that truly fit within the budget.
 
 💎 Hidden Gem Logic:
 Include at least one underrated or lesser-known gem among the 5.
@@ -173,7 +194,13 @@ RETURN ONLY VALID JSON in this exact format:
       "hidden_gem": false
     }
   ]
-}`;
+}
+
+⚠️ FINAL REMINDER:
+Before returning your response, VERIFY that EVERY destination's "total_per_person" is ≤ ₹${budgetRange.max}.
+If you cannot find 5 destinations within this budget, return fewer destinations (4, 3, 2, or even 1).
+If NO destinations fit within ₹${budgetRange.max}, return {"destinations": [], "message": "No destinations found within the specified budget of ${formData.budget}"}.
+DO NOT compromise on budget accuracy - it is better to return fewer destinations than to exceed the user's budget.`;
 };
 
 export const generateDestinations = async (formData: TripFormData): Promise<AIDestinationResponse> => {
@@ -217,6 +244,21 @@ export const generateDestinations = async (formData: TripFormData): Promise<AIDe
     }
 
     const result = JSON.parse(content);
+
+    const budgetMax = formData.budget === 'Budget-friendly (Under ₹20k)'
+      ? 20000
+      : formData.budget === 'Mid-range (₹20k-₹50k)'
+      ? 50000
+      : 250000;
+
+    if (result.destinations && Array.isArray(result.destinations)) {
+      result.destinations = result.destinations.filter(
+        (dest: DestinationOption) => dest.approx_budget.total_per_person <= budgetMax
+      );
+
+      console.log(`Budget filter applied: Max budget ₹${budgetMax}, Destinations matching: ${result.destinations.length}`);
+    }
+
     return result;
   } catch (error) {
     console.error('Failed to generate destinations:', error);

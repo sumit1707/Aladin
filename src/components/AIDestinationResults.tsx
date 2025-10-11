@@ -18,6 +18,43 @@ export default function AIDestinationResults({ destinations, onSelectDestination
     }, 300);
   };
 
+  if (!destinations || destinations.length === 0) {
+    return (
+      <div className="w-full max-w-4xl mx-auto px-4 py-12">
+        <div className="bg-gradient-to-br from-emerald-900/50 to-black/50 backdrop-blur-xl border-2 border-emerald-500/50 rounded-2xl shadow-2xl p-8 text-center">
+          <div className="mb-6">
+            <div className="w-20 h-20 mx-auto mb-4 bg-emerald-500/20 rounded-full flex items-center justify-center">
+              <DollarSign className="w-10 h-10 text-emerald-400" />
+            </div>
+            <h2 className="text-3xl font-bold text-emerald-400 mb-3">
+              No Destinations Found
+            </h2>
+            <p className="text-emerald-300/80 text-lg mb-6">
+              Unfortunately, we couldn't find any destinations that match your preferences within your specified budget.
+            </p>
+            <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-4 mb-6">
+              <p className="text-emerald-300 text-sm">
+                Try adjusting your search criteria:
+              </p>
+              <ul className="text-emerald-300/70 text-sm mt-2 space-y-1">
+                <li>• Increase your budget range</li>
+                <li>• Choose a shorter trip duration</li>
+                <li>• Select domestic destinations instead of international</li>
+                <li>• Consider traveling during off-peak season</li>
+              </ul>
+            </div>
+            <button
+              onClick={onBack}
+              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-lg font-semibold transition-all shadow-lg shadow-emerald-500/30"
+            >
+              Modify Search Criteria
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8">
       <div className="mb-8 text-center">
@@ -25,8 +62,15 @@ export default function AIDestinationResults({ destinations, onSelectDestination
           Your Perfect Destinations
         </h1>
         <p className="text-emerald-300/80 text-lg">
-          AI-curated top 5 destinations tailored just for you
+          {destinations.length === 1
+            ? 'Found 1 destination matching your criteria'
+            : `AI-curated ${destinations.length} destinations tailored just for you`}
         </p>
+        {destinations.length < 5 && (
+          <p className="text-emerald-400/70 text-sm mt-2">
+            Only {destinations.length} destination{destinations.length > 1 ? 's' : ''} found within your budget
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-6 mb-6">
