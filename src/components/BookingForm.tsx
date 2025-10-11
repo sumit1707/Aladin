@@ -156,7 +156,7 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-emerald-300 text-xs">Children</span>
+                <span className="text-emerald-300 text-xs">Children under 5 yrs</span>
                 <div className="flex items-center gap-1.5">
                   <button
                     type="button"
