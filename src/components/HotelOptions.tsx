@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { HotelOption, ItineraryDay } from '../lib/llm';
-import { Star, MapPin, User, Mail, Phone, X, Hotel, Car, Calculator, CheckCircle, Headset, ArrowLeft } from 'lucide-react';
+import { Star, MapPin, User, Mail, Phone, X, Hotel, Car, Calculator, CheckCircle, Headset, ArrowLeft, Check } from 'lucide-react';
 
 interface HotelOptionsProps {
   hotels: HotelOption[];
@@ -54,6 +54,7 @@ export default function HotelOptions({
   const [carPreferences, setCarPreferences] = useState('');
   const [showCostBreakdown, setShowCostBreakdown] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }).map((_, i) => (
@@ -119,6 +120,11 @@ export default function HotelOptions({
   };
 
   const handleSubmit = () => {
+    if (!isConfirmed) {
+      alert('Please confirm your input details by checking the confirmation checkbox on the "Confirm Your Input" tab.');
+      setActiveTab('details');
+      return;
+    }
     setShowCostBreakdown(true);
   };
 
@@ -356,13 +362,25 @@ export default function HotelOptions({
         <div className="p-6 pb-0">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-emerald-400">Hotel Recommendations & Booking Details</h2>
-            <button
-              onClick={handleSubmit}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg font-bold transition-all shadow-lg shadow-green-500/30"
-            >
-              <Calculator className="w-5 h-5" />
-              Calculate Total Cost
-            </button>
+            <div className="relative">
+              <button
+                onClick={handleSubmit}
+                disabled={!isConfirmed}
+                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all shadow-lg ${
+                  isConfirmed
+                    ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-green-500/30 cursor-pointer'
+                    : 'bg-gray-600/50 text-gray-400 cursor-not-allowed shadow-gray-500/20'
+                }`}
+              >
+                <Calculator className="w-5 h-5" />
+                Calculate Total Cost
+              </button>
+              {!isConfirmed && (
+                <div className="absolute top-full mt-2 right-0 bg-amber-500/90 text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap shadow-lg">
+                  Please confirm your details first
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex gap-2 mb-0 border-b border-emerald-500/30">
@@ -587,6 +605,34 @@ export default function HotelOptions({
                     </div>
                   )}
                 </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-emerald-600/20 to-emerald-800/20 border-2 border-emerald-500 rounded-lg p-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex items-center h-6">
+                    <input
+                      type="checkbox"
+                      id="confirmDetails"
+                      checked={isConfirmed}
+                      onChange={(e) => setIsConfirmed(e.target.checked)}
+                      className="w-5 h-5 rounded border-2 border-emerald-500 bg-black/60 checked:bg-emerald-600 checked:border-emerald-600 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-0 cursor-pointer"
+                    />
+                  </div>
+                  <label htmlFor="confirmDetails" className="flex-1 cursor-pointer">
+                    <div className="text-emerald-300 font-semibold text-base mb-1">
+                      I confirm that all the information provided above is correct
+                    </div>
+                    <div className="text-emerald-300/70 text-sm">
+                      Please review all your details carefully. You must check this box before proceeding to calculate the total cost.
+                    </div>
+                  </label>
+                </div>
+                {!isConfirmed && (
+                  <div className="mt-4 flex items-center gap-2 text-amber-400 text-sm">
+                    <Check className="w-4 h-4" />
+                    <span>Required: Please confirm your details to continue</span>
+                  </div>
+                )}
               </div>
             </div>
           ) : activeTab === 'hotel-count' ? (
