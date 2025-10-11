@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Lock, LogIn, MapPin } from 'lucide-react';
+import { Mail, Lock, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface LoginPageProps {
@@ -10,7 +10,6 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
   const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fromDestination, setFromDestination] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -83,21 +82,6 @@ export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Password"
                       required
-                      className="w-full pl-12 pr-4 py-3 bg-emerald-800/30 border border-emerald-600/40 rounded-lg text-emerald-300 placeholder-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <MapPin className="h-5 w-5 text-emerald-400/60" />
-                    </div>
-                    <input
-                      type="text"
-                      value={fromDestination}
-                      onChange={(e) => setFromDestination(e.target.value)}
-                      placeholder="From Destination (City)"
                       className="w-full pl-12 pr-4 py-3 bg-emerald-800/30 border border-emerald-600/40 rounded-lg text-emerald-300 placeholder-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                     />
                   </div>
