@@ -55,6 +55,7 @@ DO NOT include destinations where total > user's budget.`;
 
 const generatePrompt = (formData: TripFormData): string => {
   const scope = formData.domesticOrIntl === 'Within India' ? 'National' : 'International';
+  const hasVisualInspiration = !!(formData.inspirationImage || formData.inspirationVideoLink);
 
   // Match the actual form values: '< ₹15,000', '₹15,000-₹40,000', '₹40,000-₹80,000', '₹80,000+'
   const budgetMax = formData.budget === '< ₹15,000' ? 15000
@@ -62,6 +63,130 @@ const generatePrompt = (formData: TripFormData): string => {
     : formData.budget === '₹40,000-₹80,000' ? 80000
     : formData.budget === '₹80,000+' ? 150000
     : 15000; // default to lowest if no match
+
+  if (hasVisualInspiration) {
+    return `VISUAL INSPIRATION SEARCH - Analyze the provided ${formData.inspirationImage ? 'image' : 'video'} to understand what the customer wants.
+
+${formData.inspirationVideoLink ? `VIDEO LINK: ${formData.inspirationVideoLink}
+
+Analyze this video to understand:
+- The landscape, scenery, and environment shown
+- The atmosphere, vibe, and mood
+- Activities and experiences featured
+- Architecture or cultural elements
+- Natural features (mountains, beaches, forests, etc.)
+` : ''}
+
+${formData.inspirationImage ? `IMAGE PROVIDED: Customer has uploaded an inspiration image (base64 encoded).
+
+Carefully analyze the image to understand:
+- Type of landscape (mountains, beach, desert, city, forest, etc.)
+- Visual characteristics (colors, architecture, natural features)
+- Atmosphere and mood conveyed
+- Cultural or architectural style
+- Weather conditions visible
+- Activities or scenes depicted
+` : ''}
+
+YOUR TASK:
+Find destinations BOTH within India AND outside India that have similar views, vibes, and characteristics to what's shown in the ${formData.inspirationImage ? 'image' : 'video'}.
+
+TRIP CONSTRAINTS:
+- From: ${formData.startLocation}
+- Duration: ${formData.days} days (${formData.days - 1} nights)
+- Month: ${formData.month}
+- Travel by: ${formData.travelMode}
+- Type: ${formData.groupType} - ${formData.mood} mood
+- BUDGET LIMIT: ₹${budgetMax} per person (TOTAL FOR EVERYTHING)
+- Destination preference: ${formData.domesticOrIntl}
+
+SEARCH STRATEGY:
+1. First, understand the visual characteristics from the ${formData.inspirationImage ? 'image' : 'video'}
+2. Find destinations that match those visual characteristics
+3. Filter by budget (₹${budgetMax}) and duration (${formData.days} days)
+4. Prioritize destinations based on preference: ${formData.domesticOrIntl}
+5. If NO destinations match the visual inspiration within budget/duration constraints, return EMPTY destinations array
+
+IMPORTANT:
+- ONLY return destinations that truly match the visual style shown
+- If the ${formData.inspirationImage ? 'image shows beaches' : 'video shows beaches'}, suggest beach destinations
+- If the ${formData.inspirationImage ? 'image shows mountains' : 'video shows mountains'}, suggest mountain destinations
+- If the ${formData.inspirationImage ? 'image shows cities' : 'video shows cities'}, suggest urban destinations
+- Match the VIBE and ATMOSPHERE, not just the category
+- If budget is too low for the type of destination shown, return empty array
+
+STEP-BY-STEP BUDGET CALCULATION:
+
+For EACH destination, calculate these 5 costs:
+
+1. travel_to_destination (${formData.travelMode} from ${formData.startLocation}):
+   ${formData.travelMode === 'Flight' ? `Domestic India: ₹6,000-10,000 round-trip | International: ₹25,000-40,000 round-trip (minimum)` : ''}
+   ${formData.travelMode === 'Train 3A' ? `Domestic India only: ₹2,000-5,000 depending on distance` : ''}
+   ${formData.travelMode === 'Train 2A' ? `Domestic India only: ₹3,000-7,000 depending on distance` : ''}
+   ${formData.travelMode === 'Car' ? `Domestic India only: ₹3,000-8,000 (fuel + tolls)` : ''}
+
+2. stay (${formData.days - 1} nights × cost per night):
+   Budget tier: ₹2,500/night × ${formData.days - 1} = ₹${(formData.days - 1) * 2500}
+   Mid tier: ₹5,000/night × ${formData.days - 1} = ₹${(formData.days - 1) * 5000}
+
+3. food (${formData.days} days × cost per day):
+   ₹2,000/day × ${formData.days} = ₹${formData.days * 2000}
+
+4. local_transport (within destination):
+   ₹1,000/day × ${formData.days} = ₹${formData.days * 1000}
+
+5. activities (tours, entry fees):
+   ₹2,000-4,000 for entire trip
+
+total_per_person = (1) + (2) + (3) + (4) + (5)
+
+VERIFY: If total_per_person > ₹${budgetMax}, REJECT this destination
+
+Return JSON:
+{
+  "destinations": [
+    {
+      "id": "unique-id",
+      "title": "City, State/Country",
+      "country": "Country",
+      "short_description": "Why it matches the visual inspiration",
+      "weather": {
+        "temperature_range": "20-30°C",
+        "condition": "sunny/cloudy/rainy"
+      },
+      "must_sees": [
+        {"name": "Attraction 1", "reason": "Why this is must-see", "video_link": "https://www.youtube.com/results?search_query=City+Attraction1"},
+        {"name": "Attraction 2", "reason": "Why this is must-see", "video_link": "https://www.youtube.com/results?search_query=City+Attraction2"},
+        {"name": "Attraction 3", "reason": "Why this is must-see", "video_link": "https://www.youtube.com/results?search_query=City+Attraction3"}
+      ],
+      "approx_budget": {
+        "breakdown": {
+          "travel_to_destination": 8000,
+          "stay": ${(formData.days - 1) * 5000},
+          "food": ${formData.days * 2000},
+          "local_transport": ${formData.days * 1000},
+          "activities": 3000
+        },
+        "total_per_person": ${8000 + ((formData.days - 1) * 5000) + (formData.days * 2000) + (formData.days * 1000) + 3000}
+      },
+      "pros": ["Benefit 1", "Benefit 2"],
+      "con": "One realistic drawback",
+      "best_months": "Oct-Mar",
+      "travel_time_from_origin": "6 hours by flight",
+      "accessibility_note": "How to reach",
+      "estimated_time_to_cover": "3-4 days ideal",
+      "hidden_gem": false
+    }
+  ]
+}
+
+CRITICAL RULES:
+1. Calculate total_per_person correctly: ADD all 5 breakdown values
+2. Verify: total must equal sum of breakdown (travel + stay + food + local + activities)
+3. If total > ₹${budgetMax}, do NOT include that destination
+4. Return 1-5 destinations that match the visual inspiration and fit budget, or empty array if none fit
+5. MUST provide exactly 3 must-see attractions for EACH destination with video_link for each`
+  }
 
   return `Find ${scope === 'National' ? 'India' : 'international'} destinations for:
 
@@ -168,6 +293,29 @@ export const generateDestinations = async (formData: TripFormData): Promise<AIDe
 
   try {
     const prompt = generatePrompt(formData);
+    const hasVisualInspiration = !!(formData.inspirationImage || formData.inspirationVideoLink);
+
+    // If image is provided, use vision model with image content
+    const userMessage = formData.inspirationImage
+      ? {
+          role: 'user' as const,
+          content: [
+            {
+              type: 'text' as const,
+              text: prompt
+            },
+            {
+              type: 'image_url' as const,
+              image_url: {
+                url: formData.inspirationImage
+              }
+            }
+          ]
+        }
+      : {
+          role: 'user' as const,
+          content: prompt
+        };
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -176,10 +324,10 @@ export const generateDestinations = async (formData: TripFormData): Promise<AIDe
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: hasVisualInspiration && formData.inspirationImage ? 'gpt-4o' : 'gpt-4o-mini',
         messages: [
           { role: 'system', content: AI_SYSTEM_PROMPT },
-          { role: 'user', content: prompt }
+          userMessage
         ],
         temperature: 0.7,
         max_tokens: 4000,
