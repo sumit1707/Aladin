@@ -377,20 +377,17 @@ function App() {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-      const { data: { session } } = await supabase.auth.getSession();
-
       console.log('Sending email notification...');
-      if (session?.access_token) {
-        try {
-          const emailResponse = await fetch(
-            `${supabaseUrl}/functions/v1/send-booking-email`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session.access_token}`,
-                'apikey': supabaseAnonKey,
-              },
+      try {
+        const emailResponse = await fetch(
+          `${supabaseUrl}/functions/v1/send-booking-email`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${supabaseAnonKey}`,
+              'apikey': supabaseAnonKey,
+            },
               body: JSON.stringify({
                 customerName: customerDetails.name,
                 customerEmail: customerDetails.email,
@@ -410,18 +407,15 @@ function App() {
             }
           );
 
-          if (!emailResponse.ok) {
-            const errorText = await emailResponse.text();
-            console.error('Failed to send email notification:', errorText);
-          } else {
-            const result = await emailResponse.json();
-            console.log('Booking confirmation email sent successfully:', result);
-          }
-        } catch (emailError) {
-          console.error('Error sending email notification:', emailError);
+        if (!emailResponse.ok) {
+          const errorText = await emailResponse.text();
+          console.error('Failed to send email notification:', errorText);
+        } else {
+          const result = await emailResponse.json();
+          console.log('Booking confirmation email sent successfully:', result);
         }
-      } else {
-        console.log('No active session, skipping email notification');
+      } catch (emailError) {
+        console.error('Error sending email notification:', emailError);
       }
 
       console.log('Displaying hotel options...');

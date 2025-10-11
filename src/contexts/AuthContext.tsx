@@ -18,57 +18,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isSigningUpRef = useRef(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!isSigningUpRef.current) {
-        setUser(session?.user ?? null);
-      }
-      setLoading(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        setUser(null);
-      } else if (event === 'SIGNED_IN' && session && !isSigningUpRef.current) {
-        setUser(session.user);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    // Bypass authentication - no session check needed
+    setLoading(false);
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
+    // Bypass authentication - accept any credentials
+    // Create a mock user object
+    const mockUser = {
+      id: 'mock-user-' + Date.now(),
+      email: email,
+      app_metadata: {},
+      user_metadata: {},
+      aud: 'authenticated',
+      created_at: new Date().toISOString(),
+    } as User;
+
+    setUser(mockUser);
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
+    // Bypass authentication - accept any credentials
+    // Just acknowledge the signup without actually creating an account
     isSigningUpRef.current = true;
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-          },
-        },
-      });
-      if (error) throw error;
-
-      if (data.session) {
-        await supabase.auth.signOut();
-      }
+      // Do nothing - no actual signup
     } finally {
       isSigningUpRef.current = false;
     }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    // Bypass authentication - just clear the mock user
+    setUser(null);
   };
 
   const value = {
