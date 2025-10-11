@@ -9,14 +9,14 @@ interface LoginPageProps {
 export default function LoginPage({ onSwitchToSignup }: LoginPageProps) {
   const { signIn } = useAuth();
   const [email, setEmail] = useState(() => {
-    return localStorage.getItem('loginEmail') || 'demo@example.com';
+    return localStorage.getItem('loginEmail') || '';
   });
-  const [password, setPassword] = useState('password123');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (email && email !== 'demo@example.com') {
+    if (email) {
       localStorage.setItem('loginEmail', email);
     }
   }, [email]);

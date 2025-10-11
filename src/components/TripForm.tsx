@@ -17,26 +17,35 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
       }
     }
     return {
-      month: 'Dec',
-      travelers: 2,
-      groupType: 'Family',
-      domesticOrIntl: 'Within India',
-      theme: ['Beach'],
-      mood: 'Relaxing',
-      budget: '₹15,000-₹40,000',
-      flexibleDates: true,
-      travelMode: 'Flight',
-      startLocation: 'Mumbai',
-      days: 5,
+      month: '',
+      travelers: 1,
+      groupType: '',
+      domesticOrIntl: '',
+      theme: [],
+      mood: '',
+      budget: '',
+      flexibleDates: false,
+      travelMode: '',
+      startLocation: '',
+      days: 3,
       inspirationImage: '',
       inspirationVideoLink: '',
     };
   };
 
   const [formData, setFormData] = useState<TripFormData>(getDefaultFormData());
-
   const [errors, setErrors] = useState<Partial<Record<keyof TripFormData, string>>>({});
   const [imagePreview, setImagePreview] = useState<string>('');
+
+  const [startLocationHistory, setStartLocationHistory] = useState<string[]>(() => {
+    const saved = localStorage.getItem('startLocationHistory');
+    return saved ? JSON.parse(saved) : ['Delhi', 'Mumbai', 'Bangalore', 'Chennai', 'Kolkata', 'Hyderabad', 'Pune', 'Ahmedabad'];
+  });
+
+  const [videoLinkHistory, setVideoLinkHistory] = useState<string[]>(() => {
+    const saved = localStorage.getItem('videoLinkHistory');
+    return saved ? JSON.parse(saved) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem('tripFormData', JSON.stringify(formData));
@@ -47,6 +56,16 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
       setImagePreview(formData.inspirationImage);
     }
   }, []);
+
+  const addToHistory = (key: string, value: string, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
+    if (value && value.trim()) {
+      setter(prev => {
+        const newHistory = [value, ...prev.filter(item => item !== value)].slice(0, 10);
+        localStorage.setItem(key, JSON.stringify(newHistory));
+        return newHistory;
+      });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +86,11 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
+    }
+
+    addToHistory('startLocationHistory', formData.startLocation, setStartLocationHistory);
+    if (formData.inspirationVideoLink) {
+      addToHistory('videoLinkHistory', formData.inspirationVideoLink, setVideoLinkHistory);
     }
 
     setErrors({});
@@ -120,11 +144,17 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
           </label>
           <input
             type="text"
+            list="startLocationList"
             placeholder="e.g., Delhi, Mumbai, Bangalore"
             value={formData.startLocation}
             onChange={(e) => setFormData({ ...formData, startLocation: e.target.value })}
             className="w-full px-4 py-2 bg-black/50 border border-emerald-500/50 rounded-lg text-emerald-300 placeholder-emerald-600 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
           />
+          <datalist id="startLocationList">
+            {startLocationHistory.map((location, index) => (
+              <option key={index} value={location} />
+            ))}
+          </datalist>
           {errors.startLocation && <p className="text-red-500 text-xs mt-1">{errors.startLocation}</p>}
         </div>
 
@@ -361,11 +391,17 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
             </label>
             <input
               type="url"
+              list="videoLinkList"
               placeholder="e.g., https://youtube.com/watch?v=..."
               value={formData.inspirationVideoLink}
               onChange={(e) => setFormData({ ...formData, inspirationVideoLink: e.target.value })}
               className="w-full px-4 py-2 bg-black/50 border border-emerald-500/50 rounded-lg text-emerald-300 placeholder-emerald-600 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
             />
+            <datalist id="videoLinkList">
+              {videoLinkHistory.map((link, index) => (
+                <option key={index} value={link} />
+              ))}
+            </datalist>
           </div>
         </div>
       </div>

@@ -47,14 +47,15 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
         const parsed = JSON.parse(saved);
         return {
           ...parsed,
-          roomType: parsed.roomType || getDefaultRoomType()
+          roomType: parsed.roomType || getDefaultRoomType(),
+          specialRequests: ''
         };
       } catch (e) {
         console.error('Failed to parse saved booking data');
       }
     }
     return {
-      adults: 2,
+      adults: 1,
       children: 0,
       seniors: 0,
       numberOfHotels: 1,
@@ -73,6 +74,21 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState<BookingFormData>(getDefaultBookingData());
 
+  const [customerNameHistory, setCustomerNameHistory] = useState<string[]>(() => {
+    const saved = localStorage.getItem('customerNameHistory');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [customerEmailHistory, setCustomerEmailHistory] = useState<string[]>(() => {
+    const saved = localStorage.getItem('customerEmailHistory');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [customerPhoneHistory, setCustomerPhoneHistory] = useState<string[]>(() => {
+    const saved = localStorage.getItem('customerPhoneHistory');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   useEffect(() => {
     const dataToSave = {
       ...formData,
@@ -80,6 +96,16 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
     };
     localStorage.setItem('bookingFormData', JSON.stringify(dataToSave));
   }, [formData.adults, formData.children, formData.seniors, formData.numberOfHotels, formData.numberOfRooms, formData.numberOfCars, formData.roomType, formData.vehicleType, formData.hasPets, formData.customerName, formData.customerEmail, formData.customerPhone]);
+
+  const addToHistory = (key: string, value: string, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
+    if (value && value.trim()) {
+      setter(prev => {
+        const newHistory = [value, ...prev.filter(item => item !== value)].slice(0, 10);
+        localStorage.setItem(key, JSON.stringify(newHistory));
+        return newHistory;
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,6 +119,10 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
       alert('At least one adult is required');
       return;
     }
+
+    addToHistory('customerNameHistory', formData.customerName, setCustomerNameHistory);
+    addToHistory('customerEmailHistory', formData.customerEmail, setCustomerEmailHistory);
+    addToHistory('customerPhoneHistory', formData.customerPhone, setCustomerPhoneHistory);
 
     setSubmitting(true);
     try {
@@ -136,28 +166,46 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
             <div className="space-y-2">
               <input
                 type="text"
+                list="customerNameList"
                 required
                 value={formData.customerName}
                 onChange={(e) => setFormData(prev => ({ ...prev, customerName: e.target.value }))}
                 placeholder="Full Name *"
                 className="w-full bg-black/60 border border-emerald-500/30 rounded px-2 py-1 text-xs text-emerald-300 placeholder-emerald-500/50 focus:outline-none focus:border-emerald-500"
               />
+              <datalist id="customerNameList">
+                {customerNameHistory.map((name, index) => (
+                  <option key={index} value={name} />
+                ))}
+              </datalist>
               <input
                 type="email"
+                list="customerEmailList"
                 required
                 value={formData.customerEmail}
                 onChange={(e) => setFormData(prev => ({ ...prev, customerEmail: e.target.value }))}
                 placeholder="Email Address *"
                 className="w-full bg-black/60 border border-emerald-500/30 rounded px-2 py-1 text-xs text-emerald-300 placeholder-emerald-500/50 focus:outline-none focus:border-emerald-500"
               />
+              <datalist id="customerEmailList">
+                {customerEmailHistory.map((email, index) => (
+                  <option key={index} value={email} />
+                ))}
+              </datalist>
               <input
                 type="tel"
+                list="customerPhoneList"
                 required
                 value={formData.customerPhone}
                 onChange={(e) => setFormData(prev => ({ ...prev, customerPhone: e.target.value }))}
                 placeholder="Phone Number *"
                 className="w-full bg-black/60 border border-emerald-500/30 rounded px-2 py-1 text-xs text-emerald-300 placeholder-emerald-500/50 focus:outline-none focus:border-emerald-500"
               />
+              <datalist id="customerPhoneList">
+                {customerPhoneHistory.map((phone, index) => (
+                  <option key={index} value={phone} />
+                ))}
+              </datalist>
             </div>
           </div>
 

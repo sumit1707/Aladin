@@ -9,24 +9,24 @@ interface SignupPageProps {
 export default function SignupPage({ onSwitchToLogin }: SignupPageProps) {
   const { signUp } = useAuth();
   const [email, setEmail] = useState(() => {
-    return localStorage.getItem('signupEmail') || 'newuser@example.com';
+    return localStorage.getItem('signupEmail') || '';
   });
-  const [password, setPassword] = useState('password123');
+  const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState(() => {
-    return localStorage.getItem('signupFullName') || 'John Doe';
+    return localStorage.getItem('signupFullName') || '';
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (email && email !== 'newuser@example.com') {
+    if (email) {
       localStorage.setItem('signupEmail', email);
     }
   }, [email]);
 
   useEffect(() => {
-    if (fullName && fullName !== 'John Doe') {
+    if (fullName) {
       localStorage.setItem('signupFullName', fullName);
     }
   }, [fullName]);

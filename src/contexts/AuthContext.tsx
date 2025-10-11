@@ -53,9 +53,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Bypass authentication - just clear the mock user
     setUser(null);
 
-    // Clear all saved form data from localStorage
-    localStorage.removeItem('tripFormData');
-    localStorage.removeItem('bookingFormData');
+    // Clear only login/signup form data, NOT trip/booking form data or history
+    // This allows users to retain their form preferences across sessions
     localStorage.removeItem('loginEmail');
     localStorage.removeItem('signupEmail');
     localStorage.removeItem('signupFullName');
