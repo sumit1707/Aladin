@@ -6,6 +6,7 @@ import SavedTrips from './components/SavedTrips';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
 import HotelOptions from './components/HotelOptions';
+import BookingConfirmation from './components/BookingConfirmation';
 import { BookingFormData } from './components/BookingForm';
 import { useAuth } from './contexts/AuthContext';
 import { supabase } from './lib/supabase';
@@ -38,6 +39,8 @@ function App() {
   const [showHotelOptions, setShowHotelOptions] = useState(false);
   const [hotelOptions, setHotelOptions] = useState<HotelOption[]>([]);
   const [currentBookingData, setCurrentBookingData] = useState<BookingFormData | null>(null);
+  const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
+  const [pendingBookingData, setPendingBookingData] = useState<{ bookingData: BookingFormData; customerDetails: { name: string; email: string; phone: string } } | null>(null);
 
   if (authLoading) {
     return (
@@ -274,9 +277,21 @@ function App() {
       return;
     }
 
+    setPendingBookingData({ bookingData, customerDetails });
+    setShowBookingConfirmation(true);
+  };
+
+  const handleBookingConfirm = async () => {
+    if (!pendingBookingData || !user || !selectedDestination || !currentTripId || !formData) {
+      alert('Unable to process booking. Please try again.');
+      return;
+    }
+
+    const { bookingData, customerDetails } = pendingBookingData;
     console.log('Starting booking submission...', { destination: selectedDestination.title, customerName: customerDetails.name });
 
     try {
+      setShowBookingConfirmation(false);
       console.log('Generating hotel options...');
       const hotelPrompt = generateHotelPrompt(
         selectedDestination.title,
@@ -462,6 +477,24 @@ function App() {
           )}
         </div>
       </div>
+
+      {showBookingConfirmation && pendingBookingData && selectedDestination && formData && (
+        <BookingConfirmation
+          bookingData={pendingBookingData.bookingData}
+          destinationName={selectedDestination.title}
+          tripBudget={formData.budget}
+          startDate={formData.startDate}
+          endDate={formData.endDate}
+          days={formData.days}
+          travelMode={formData.travelMode}
+          onConfirm={handleBookingConfirm}
+          onBack={() => setShowBookingConfirmation(false)}
+          onClose={() => {
+            setShowBookingConfirmation(false);
+            setPendingBookingData(null);
+          }}
+        />
+      )}
 
       {showHotelOptions && currentBookingData && itinerary && selectedDestination && formData && (
         <HotelOptions
