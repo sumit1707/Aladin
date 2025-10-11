@@ -79,7 +79,7 @@ FIRST: Verify this is a travel/location video showing:
 If the video is NOT about a place/location (e.g., it's about people, products, animals, food close-ups, etc.), you MUST return:
 {
   "error": "invalid_content",
-  "message": "Please upload a video link of a place or location to find similar destinations.",
+  "message": "The video you provided does not appear to show a travel destination or location. Please upload a video link featuring landscapes, cities, tourist attractions, or scenic places to help us find your perfect destination.",
   "destinations": []
 }
 
@@ -102,7 +102,7 @@ FIRST: Verify this is a travel/location image showing:
 If the image does NOT show a place/location (e.g., it's a selfie, food, products, animals, people portraits, abstract art, etc.), you MUST return:
 {
   "error": "invalid_content",
-  "message": "Please upload an image of a place or location to find similar destinations.",
+  "message": "The image you uploaded does not appear to show a travel destination or location. Please upload an image featuring landscapes, cityscapes, beaches, mountains, or other scenic places to help us find destinations that match your vision.",
   "destinations": []
 }
 

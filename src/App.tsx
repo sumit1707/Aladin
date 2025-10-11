@@ -6,6 +6,7 @@ import SavedTrips from './components/SavedTrips';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
 import HotelOptions from './components/HotelOptions';
+import ErrorModal from './components/ErrorModal';
 import { BookingFormData } from './components/BookingForm';
 import { useAuth } from './contexts/AuthContext';
 import { supabase } from './lib/supabase';
@@ -39,6 +40,7 @@ function App() {
   const [showHotelOptions, setShowHotelOptions] = useState(false);
   const [hotelOptions, setHotelOptions] = useState<HotelOption[]>([]);
   const [currentBookingData, setCurrentBookingData] = useState<BookingFormData | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const previousUserRef = useRef<User | null>(null);
   const isInitialMount = useRef(true);
 
@@ -93,7 +95,7 @@ function App() {
 
       // Check if AI detected invalid image/video content
       if (response.error === 'invalid_content') {
-        alert(response.message || 'Please upload an image or video link of a place/location.');
+        setErrorMessage(response.message || 'The uploaded content does not appear to be a travel destination. Please upload an image or video link showing a place or location.');
         setLoading(false);
         return;
       }
@@ -101,9 +103,9 @@ function App() {
       // Check if no destinations were found
       if (!response.destinations || response.destinations.length === 0) {
         if (data.inspirationImage || data.inspirationVideoLink) {
-          alert('No matching destinations found for your visual inspiration within the given budget and preferences. Please try different criteria or remove the image/video.');
+          setErrorMessage('No matching destinations found for your visual inspiration within the specified budget and travel preferences. Please try adjusting your budget, travel duration, or remove the image/video to see more options.');
         } else {
-          alert('No destinations found matching your criteria. Please try adjusting your preferences or budget.');
+          setErrorMessage('No destinations found matching your criteria. Please try adjusting your travel preferences, budget, or select different travel dates.');
         }
         setLoading(false);
         return;
@@ -141,7 +143,7 @@ function App() {
       setStep('ai-destinations');
     } catch (error) {
       console.error('Error generating destinations:', error);
-      alert('Failed to generate destinations. Please try again.');
+      setErrorMessage('Unable to generate travel destinations at this time. Please check your internet connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -551,6 +553,13 @@ function App() {
           tripBudget={formData.budget}
           onClose={() => setShowHotelOptions(false)}
           onLogout={handleSignOut}
+        />
+      )}
+
+      {errorMessage && (
+        <ErrorModal
+          message={errorMessage}
+          onClose={() => setErrorMessage(null)}
         />
       )}
     </div>
