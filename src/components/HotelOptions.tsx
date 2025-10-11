@@ -23,6 +23,10 @@ interface HotelOptionsProps {
   itinerary: ItineraryDay[];
   travelMode: string;
   destinationName: string;
+  startDate?: string;
+  endDate?: string;
+  days?: number;
+  tripBudget?: string;
   onClose: () => void;
   onLogout: () => Promise<void>;
 }
@@ -34,6 +38,10 @@ export default function HotelOptions({
   itinerary,
   travelMode,
   destinationName,
+  startDate,
+  endDate,
+  days,
+  tripBudget,
   onClose,
   onLogout
 }: HotelOptionsProps) {
@@ -504,12 +512,30 @@ export default function HotelOptions({
               <div className="bg-black/40 border border-emerald-500/40 rounded-lg p-4">
                 <h3 className="text-xl font-bold text-emerald-400 mb-4">Booking Preferences</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {startDate && endDate && (
+                    <div className="md:col-span-2">
+                      <div className="text-emerald-300/70 text-sm mb-1">Trip Dates</div>
+                      <div className="text-emerald-300 font-semibold text-base">{startDate} to {endDate}</div>
+                    </div>
+                  )}
+                  {days && (
+                    <div>
+                      <div className="text-emerald-300/70 text-sm mb-1">Duration</div>
+                      <div className="text-emerald-300 font-semibold text-base">{days} days</div>
+                    </div>
+                  )}
+                  {tripBudget && (
+                    <div>
+                      <div className="text-emerald-300/70 text-sm mb-1">Budget</div>
+                      <div className="text-emerald-300 font-semibold text-base">{tripBudget}</div>
+                    </div>
+                  )}
                   <div>
                     <div className="text-emerald-300/70 text-sm mb-1">Guests</div>
                     <div className="text-emerald-300 font-semibold text-base">
-                      {bookingDetails.adults} Adults
+                      {bookingDetails.adults} Adult{bookingDetails.adults !== 1 ? 's' : ''}
                       {bookingDetails.children > 0 && `, ${bookingDetails.children} Children`}
-                      {bookingDetails.seniors > 0 && `, ${bookingDetails.seniors} Seniors`}
+                      {bookingDetails.seniors > 0 && `, ${bookingDetails.seniors} Senior${bookingDetails.seniors !== 1 ? 's' : ''}`}
                     </div>
                   </div>
                   <div>

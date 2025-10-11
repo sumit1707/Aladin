@@ -493,6 +493,10 @@ function App() {
           itinerary={itinerary.itinerary}
           travelMode={formData.travelMode}
           destinationName={selectedDestination.name}
+          startDate={formData.startDate}
+          endDate={formData.endDate}
+          days={formData.days}
+          tripBudget={formData.budget}
           onClose={() => setShowHotelOptions(false)}
           onLogout={signOut}
         />
