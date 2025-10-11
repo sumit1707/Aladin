@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DestinationOption } from '../lib/aiDestinations';
-import { MapPin, Calendar, DollarSign, ThermometerSun, Star, TrendingUp, Youtube } from 'lucide-react';
+import { MapPin, Calendar, DollarSign, ThermometerSun, Star, TrendingUp, Youtube, ArrowLeft } from 'lucide-react';
 
 interface AIDestinationResultsProps {
   destinations: DestinationOption[];
@@ -57,6 +57,14 @@ export default function AIDestinationResults({ destinations, onSelectDestination
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8">
+      <button
+        onClick={onBack}
+        className="mb-6 flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600/20 to-emerald-700/20 hover:from-emerald-600/40 hover:to-emerald-700/40 border border-emerald-500/50 text-emerald-300 rounded-lg font-medium transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        Back to Search
+      </button>
+
       <div className="mb-8 text-center">
         <h1 className="text-4xl font-black bg-gradient-to-r from-emerald-400 via-emerald-300 to-emerald-400 bg-clip-text text-transparent mb-3 drop-shadow-lg">
           Your Perfect Destinations
