@@ -52,12 +52,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     // Bypass authentication - just clear the mock user
     setUser(null);
-
-    // Clear only login/signup form data, NOT trip/booking form data or history
-    // This allows users to retain their form preferences across sessions
-    localStorage.removeItem('loginEmail');
-    localStorage.removeItem('signupEmail');
-    localStorage.removeItem('signupFullName');
   };
 
   const value = {

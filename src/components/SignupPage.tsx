@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Mail, Lock, User, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -8,28 +8,12 @@ interface SignupPageProps {
 
 export default function SignupPage({ onSwitchToLogin }: SignupPageProps) {
   const { signUp } = useAuth();
-  const [email, setEmail] = useState(() => {
-    return localStorage.getItem('signupEmail') || '';
-  });
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState(() => {
-    return localStorage.getItem('signupFullName') || '';
-  });
+  const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    if (email) {
-      localStorage.setItem('signupEmail', email);
-    }
-  }, [email]);
-
-  useEffect(() => {
-    if (fullName) {
-      localStorage.setItem('signupFullName', fullName);
-    }
-  }, [fullName]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
