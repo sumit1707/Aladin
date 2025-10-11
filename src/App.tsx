@@ -1,3 +1,4 @@
+import { generateFromAI } from "./lib/ai";
 import { useState, useEffect, useRef } from 'react';
 import TripForm from './components/TripForm';
 import DestinationCards from './components/DestinationCards';
