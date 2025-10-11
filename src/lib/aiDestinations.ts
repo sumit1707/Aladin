@@ -56,9 +56,12 @@ DO NOT include destinations where total > user's budget.`;
 const generatePrompt = (formData: TripFormData): string => {
   const scope = formData.domesticOrIntl === 'Within India' ? 'National' : 'International';
 
-  const budgetMax = formData.budget === 'Budget-friendly (Under ₹20k)' ? 20000
-    : formData.budget === 'Mid-range (₹20k-₹50k)' ? 50000
-    : 250000;
+  // Match the actual form values: '< ₹15,000', '₹15,000-₹40,000', '₹40,000-₹80,000', '₹80,000+'
+  const budgetMax = formData.budget === '< ₹15,000' ? 15000
+    : formData.budget === '₹15,000-₹40,000' ? 40000
+    : formData.budget === '₹40,000-₹80,000' ? 80000
+    : formData.budget === '₹80,000+' ? 150000
+    : 15000; // default to lowest if no match
 
   return `Find ${scope === 'National' ? 'India' : 'international'} destinations for:
 
@@ -76,9 +79,10 @@ STEP-BY-STEP BUDGET CALCULATION:
 For EACH destination, calculate these 5 costs:
 
 1. travel_to_destination (${formData.travelMode} from ${formData.startLocation}):
-   ${formData.travelMode === 'Flight' ? `Domestic: ₹6,000-10,000 | International: ₹25,000-40,000` : ''}
-   ${formData.travelMode === 'Train' ? `₹2,000-5,000 depending on distance` : ''}
-   ${formData.travelMode === 'Bus' ? `₹1,000-3,000 depending on distance` : ''}
+   ${formData.travelMode === 'Flight' ? `Domestic India: ₹6,000-10,000 round-trip | International: ₹25,000-40,000 round-trip (minimum)` : ''}
+   ${formData.travelMode === 'Train' ? `Domestic India only: ₹2,000-5,000 depending on distance` : ''}
+   ${formData.travelMode === 'Bus' ? `Domestic India only: ₹1,000-3,000 depending on distance` : ''}
+   ${formData.travelMode === 'Car' ? `Domestic India only: ₹3,000-8,000 (fuel + tolls)` : ''}
 
 2. stay (${formData.days - 1} nights × cost per night):
    Budget tier: ₹2,500/night × ${formData.days - 1} = ₹${(formData.days - 1) * 2500}
@@ -97,8 +101,13 @@ total_per_person = (1) + (2) + (3) + (4) + (5)
 
 VERIFY: If total_per_person > ₹${budgetMax}, REJECT this destination
 
+${scope === 'International' && budgetMax < 30000 ? `
+⚠️ CRITICAL WARNING: Budget is ₹${budgetMax} but international flights alone cost ₹25,000-40,000.
+International trips are IMPOSSIBLE with this budget. Return empty destinations array.
+` : ''}
+
 REQUIREMENTS:
-- ${scope === 'National' ? 'Only destinations within India' : 'International destinations with easy visa access'}
+- ${scope === 'National' ? 'Only destinations within India' : 'International destinations (Nepal, Bhutan, Sri Lanka, Thailand, Dubai, Bali)'}
 - ${formData.days <= 3 ? 'Must be reachable within 5-6 hours' : 'Any reasonable travel time'}
 - Good weather in ${formData.month}
 - Matches ${formData.mood} mood
@@ -188,9 +197,12 @@ export const generateDestinations = async (formData: TripFormData): Promise<AIDe
 
     const result = JSON.parse(content);
 
-    const budgetMax = formData.budget === 'Budget-friendly (Under ₹20k)' ? 20000
-      : formData.budget === 'Mid-range (₹20k-₹50k)' ? 50000
-      : 250000;
+    // Match the actual form values
+    const budgetMax = formData.budget === '< ₹15,000' ? 15000
+      : formData.budget === '₹15,000-₹40,000' ? 40000
+      : formData.budget === '₹40,000-₹80,000' ? 80000
+      : formData.budget === '₹80,000+' ? 150000
+      : 15000;
 
     // Validate destinations
     console.log('🔍 Validating destinations against budget ₹' + budgetMax);
