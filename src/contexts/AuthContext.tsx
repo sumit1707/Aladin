@@ -24,9 +24,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     // Bypass authentication - accept any credentials
-    // Create a mock user object
+    // Create a mock user object with a valid UUID
+    // Using a consistent UUID for all mock users to avoid database issues
     const mockUser = {
-      id: 'mock-user-' + Date.now(),
+      id: '00000000-0000-0000-0000-000000000001',
       email: email,
       app_metadata: {},
       user_metadata: {},
