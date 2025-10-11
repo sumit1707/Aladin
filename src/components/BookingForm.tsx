@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Users, Bed, Car, MessageSquare, User as UserIcon, Mail, Phone, PawPrint, ArrowLeft } from 'lucide-react';
+import { X, Users, Bed, Car, MessageSquare, User as UserIcon, Mail, Phone, PawPrint, ArrowLeft, CheckCircle, MapPin, Calendar } from 'lucide-react';
 
 interface BookingFormProps {
   onClose: () => void;
@@ -365,6 +365,155 @@ export default function BookingForm({
               rows={2}
               className="w-full bg-black/60 border border-emerald-500/30 rounded px-2 py-1 text-xs text-emerald-300 placeholder-emerald-500/50 focus:outline-none focus:border-emerald-500 resize-none"
             />
+          </div>
+
+          {/* Confirm Your Input Section */}
+          <div className="bg-gradient-to-br from-emerald-900/60 to-black/60 border-2 border-emerald-500 rounded-lg p-3">
+            <h4 className="text-emerald-400 font-bold mb-2 flex items-center gap-1.5 text-sm border-b border-emerald-500/30 pb-2">
+              <CheckCircle className="w-4 h-4" />
+              Confirm Your Input
+            </h4>
+
+            <div className="space-y-2.5">
+              {/* Trip Information */}
+              <div className="bg-black/40 border border-emerald-500/20 rounded p-2">
+                <div className="text-emerald-400/80 font-semibold text-[10px] mb-1.5 flex items-center gap-1">
+                  <MapPin className="w-3 h-3" />
+                  TRIP INFORMATION
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-[10px]">
+                  <div>
+                    <span className="text-emerald-300/60">Destination:</span>
+                    <div className="text-emerald-300 font-semibold">{destinationName}</div>
+                  </div>
+                  {startDate && endDate && (
+                    <div>
+                      <span className="text-emerald-300/60">Dates:</span>
+                      <div className="text-emerald-300 font-semibold">{startDate} to {endDate}</div>
+                    </div>
+                  )}
+                  {days && (
+                    <div>
+                      <span className="text-emerald-300/60">Duration:</span>
+                      <div className="text-emerald-300 font-semibold">{days} days</div>
+                    </div>
+                  )}
+                  {travelMode && (
+                    <div>
+                      <span className="text-emerald-300/60">Travel Mode:</span>
+                      <div className="text-emerald-300 font-semibold">{travelMode}</div>
+                    </div>
+                  )}
+                  {tripBudget && (
+                    <div className="col-span-2">
+                      <span className="text-emerald-300/60">Budget:</span>
+                      <div className="text-emerald-300 font-semibold">{tripBudget}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Contact Details */}
+              <div className="bg-black/40 border border-emerald-500/20 rounded p-2">
+                <div className="text-emerald-400/80 font-semibold text-[10px] mb-1.5 flex items-center gap-1">
+                  <UserIcon className="w-3 h-3" />
+                  CONTACT DETAILS
+                </div>
+                <div className="space-y-1 text-[10px]">
+                  <div>
+                    <span className="text-emerald-300/60">Name:</span>
+                    <div className="text-emerald-300 font-semibold">{formData.customerName || 'Not provided'}</div>
+                  </div>
+                  <div>
+                    <span className="text-emerald-300/60">Email:</span>
+                    <div className="text-emerald-300 font-semibold break-all">{formData.customerEmail || 'Not provided'}</div>
+                  </div>
+                  <div>
+                    <span className="text-emerald-300/60">Phone:</span>
+                    <div className="text-emerald-300 font-semibold">{formData.customerPhone || 'Not provided'}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Travelers */}
+              <div className="bg-black/40 border border-emerald-500/20 rounded p-2">
+                <div className="text-emerald-400/80 font-semibold text-[10px] mb-1.5 flex items-center gap-1">
+                  <Users className="w-3 h-3" />
+                  TRAVELERS
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-[10px]">
+                  <div>
+                    <span className="text-emerald-300/60">Adults:</span>
+                    <div className="text-emerald-300 font-semibold">{formData.adults}</div>
+                  </div>
+                  <div>
+                    <span className="text-emerald-300/60">Children:</span>
+                    <div className="text-emerald-300 font-semibold">{formData.children}</div>
+                  </div>
+                  <div>
+                    <span className="text-emerald-300/60">Seniors:</span>
+                    <div className="text-emerald-300 font-semibold">{formData.seniors}</div>
+                  </div>
+                  <div className="col-span-3">
+                    <span className="text-emerald-300/60">Total:</span>
+                    <div className="text-emerald-300 font-semibold">{formData.adults + formData.children + formData.seniors} people</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Pets */}
+              <div className="bg-black/40 border border-emerald-500/20 rounded p-2">
+                <div className="text-emerald-400/80 font-semibold text-[10px] mb-1 flex items-center gap-1">
+                  <PawPrint className="w-3 h-3" />
+                  PETS
+                </div>
+                <div className="text-[10px]">
+                  <span className="text-emerald-300/60">Traveling with Pets:</span>
+                  <div className={`font-semibold ${formData.hasPets ? 'text-emerald-400' : 'text-emerald-300'}`}>
+                    {formData.hasPets ? 'Yes' : 'No'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Accommodation & Vehicle */}
+              <div className="bg-black/40 border border-emerald-500/20 rounded p-2">
+                <div className="text-emerald-400/80 font-semibold text-[10px] mb-1.5 flex items-center gap-1">
+                  <Bed className="w-3 h-3" />
+                  ACCOMMODATION & VEHICLE
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-[10px]">
+                  <div>
+                    <span className="text-emerald-300/60">Hotel Type:</span>
+                    <div className="text-emerald-300 font-semibold">{formData.roomType}</div>
+                  </div>
+                  <div>
+                    <span className="text-emerald-300/60">Rooms:</span>
+                    <div className="text-emerald-300 font-semibold">{formData.numberOfRooms}</div>
+                  </div>
+                  <div>
+                    <span className="text-emerald-300/60">Vehicle Type:</span>
+                    <div className="text-emerald-300 font-semibold">{formData.vehicleType}</div>
+                  </div>
+                  <div>
+                    <span className="text-emerald-300/60">Cars:</span>
+                    <div className="text-emerald-300 font-semibold">{formData.numberOfCars}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Special Requests */}
+              {formData.specialRequests && (
+                <div className="bg-black/40 border border-emerald-500/20 rounded p-2">
+                  <div className="text-emerald-400/80 font-semibold text-[10px] mb-1 flex items-center gap-1">
+                    <MessageSquare className="w-3 h-3" />
+                    SPECIAL REQUESTS
+                  </div>
+                  <div className="text-emerald-300 text-[10px] bg-emerald-500/10 p-1.5 rounded border border-emerald-500/20">
+                    {formData.specialRequests}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Submit Buttons */}
