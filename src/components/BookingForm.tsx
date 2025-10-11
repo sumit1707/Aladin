@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Users, Bed, Car, MessageSquare, User as UserIcon, Mail, Phone, PawPrint } from 'lucide-react';
 
 interface BookingFormProps {
@@ -40,22 +40,46 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
     return '4-star';
   };
 
+  const getDefaultBookingData = (): BookingFormData => {
+    const saved = localStorage.getItem('bookingFormData');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return {
+          ...parsed,
+          roomType: parsed.roomType || getDefaultRoomType()
+        };
+      } catch (e) {
+        console.error('Failed to parse saved booking data');
+      }
+    }
+    return {
+      adults: 2,
+      children: 0,
+      seniors: 0,
+      numberOfHotels: 1,
+      numberOfRooms: 1,
+      numberOfCars: 1,
+      roomType: getDefaultRoomType(),
+      vehicleType: 'small-car',
+      specialRequests: '',
+      customerName: '',
+      customerEmail: '',
+      customerPhone: '',
+      hasPets: false
+    };
+  };
+
   const [submitting, setSubmitting] = useState(false);
-  const [formData, setFormData] = useState<BookingFormData>({
-    adults: 1,
-    children: 0,
-    seniors: 0,
-    numberOfHotels: 1,
-    numberOfRooms: 1,
-    numberOfCars: 1,
-    roomType: getDefaultRoomType(),
-    vehicleType: 'small-car',
-    specialRequests: '',
-    customerName: '',
-    customerEmail: '',
-    customerPhone: '',
-    hasPets: false
-  });
+  const [formData, setFormData] = useState<BookingFormData>(getDefaultBookingData());
+
+  useEffect(() => {
+    const dataToSave = {
+      ...formData,
+      specialRequests: ''
+    };
+    localStorage.setItem('bookingFormData', JSON.stringify(dataToSave));
+  }, [formData.adults, formData.children, formData.seniors, formData.numberOfHotels, formData.numberOfRooms, formData.numberOfCars, formData.roomType, formData.vehicleType, formData.hasPets, formData.customerName, formData.customerEmail, formData.customerPhone]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

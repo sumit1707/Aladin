@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TripFormData } from '../lib/llm';
 
 interface TripFormProps {
@@ -7,24 +7,46 @@ interface TripFormProps {
 }
 
 export default function TripForm({ onSubmit, loading }: TripFormProps) {
-  const [formData, setFormData] = useState<TripFormData>({
-    month: '',
-    travelers: 1,
-    groupType: '',
-    domesticOrIntl: '',
-    theme: [],
-    mood: '',
-    budget: '',
-    flexibleDates: false,
-    travelMode: '',
-    startLocation: '',
-    days: 3,
-    inspirationImage: '',
-    inspirationVideoLink: '',
-  });
+  const getDefaultFormData = (): TripFormData => {
+    const saved = localStorage.getItem('tripFormData');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved form data');
+      }
+    }
+    return {
+      month: 'Dec',
+      travelers: 2,
+      groupType: 'Family',
+      domesticOrIntl: 'Within India',
+      theme: ['Beach'],
+      mood: 'Relaxing',
+      budget: '₹15,000-₹40,000',
+      flexibleDates: true,
+      travelMode: 'Flight',
+      startLocation: 'Mumbai',
+      days: 5,
+      inspirationImage: '',
+      inspirationVideoLink: '',
+    };
+  };
+
+  const [formData, setFormData] = useState<TripFormData>(getDefaultFormData());
 
   const [errors, setErrors] = useState<Partial<Record<keyof TripFormData, string>>>({});
   const [imagePreview, setImagePreview] = useState<string>('');
+
+  useEffect(() => {
+    localStorage.setItem('tripFormData', JSON.stringify(formData));
+  }, [formData]);
+
+  useEffect(() => {
+    if (formData.inspirationImage) {
+      setImagePreview(formData.inspirationImage);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
