@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { X, Users, Bed, Car, MessageSquare, User as UserIcon, Mail, Phone, PawPrint } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Users, Bed, Car, MessageSquare, User as UserIcon, PawPrint } from 'lucide-react';
 
 interface BookingFormProps {
   onClose: () => void;
@@ -33,29 +33,53 @@ export interface BookingFormData {
   hasPets: boolean;
 }
 
-export default function BookingForm({ onClose, onSubmit, destinationName, tripBudget, startDate, endDate, days, travelMode, startLocation, month, groupType, theme, mood }: BookingFormProps) {
+export default function BookingForm({ onClose, onSubmit, destinationName, tripBudget }: BookingFormProps) {
   const getDefaultRoomType = (): '3-star' | '4-star' | '5-star' => {
     if (tripBudget === 'Budget (<₹20k)') return '3-star';
     if (tripBudget === 'Luxury (>₹50k)') return '5-star';
     return '4-star';
   };
 
+  const getDefaultBookingData = (): BookingFormData => {
+    const saved = localStorage.getItem('bookingFormData');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return {
+          ...parsed,
+          roomType: parsed.roomType || getDefaultRoomType()
+        };
+      } catch (e) {
+        console.error('Failed to parse saved booking data');
+      }
+    }
+    return {
+      adults: 2,
+      children: 0,
+      seniors: 0,
+      numberOfHotels: 1,
+      numberOfRooms: 1,
+      numberOfCars: 1,
+      roomType: getDefaultRoomType(),
+      vehicleType: 'small-car',
+      specialRequests: '',
+      customerName: '',
+      customerEmail: '',
+      customerPhone: '',
+      hasPets: false
+    };
+  };
+
   const [submitting, setSubmitting] = useState(false);
-  const [formData, setFormData] = useState<BookingFormData>({
-    adults: 1,
-    children: 0,
-    seniors: 0,
-    numberOfHotels: 1,
-    numberOfRooms: 1,
-    numberOfCars: 1,
-    roomType: getDefaultRoomType(),
-    vehicleType: 'small-car',
-    specialRequests: '',
-    customerName: '',
-    customerEmail: '',
-    customerPhone: '',
-    hasPets: false
-  });
+  const [formData, setFormData] = useState<BookingFormData>(getDefaultBookingData());
+
+  useEffect(() => {
+    const dataToSave = {
+      ...formData,
+      specialRequests: ''
+    };
+    localStorage.setItem('bookingFormData', JSON.stringify(dataToSave));
+  }, [formData.adults, formData.children, formData.seniors, formData.numberOfHotels, formData.numberOfRooms, formData.numberOfCars, formData.roomType, formData.vehicleType, formData.hasPets, formData.customerName, formData.customerEmail, formData.customerPhone]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,7 +127,6 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          {/* Customer Details */}
           <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-2">
             <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-1.5 text-xs">
               <UserIcon className="w-3.5 h-3.5" />
@@ -137,7 +160,6 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
             </div>
           </div>
 
-          {/* Travelers Count */}
           <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-2">
             <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-1.5 text-xs">
               <Users className="w-3.5 h-3.5" />
@@ -210,7 +232,6 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
             </div>
           </div>
 
-          {/* Pets */}
           <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-2">
             <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-1.5 text-xs">
               <PawPrint className="w-3.5 h-3.5" />
@@ -242,7 +263,6 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
             </div>
           </div>
 
-          {/* Room Type */
           <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-2">
             <h4 className="text-emerald-400 font-semibold mb-1.5 flex items-center gap-1.5 text-xs">
               <Bed className="w-3.5 h-3.5" />
@@ -258,7 +278,7 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
                     : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
                 }`}
               >
-                <div className="font-semibold text-[10px]">3-Star</div>
+                <div className="font-semibold text-xs">3-Star</div>
               </button>
               <button
                 type="button"
@@ -269,7 +289,7 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
                     : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
                 }`}
               >
-                <div className="font-semibold text-[10px]">4-Star</div>
+                <div className="font-semibold text-xs">4-Star</div>
               </button>
               <button
                 type="button"
@@ -280,7 +300,7 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
                     : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
                 }`}
               >
-                <div className="font-semibold text-[10px]">5-Star</div>
+                <div className="font-semibold text-xs">5-Star</div>
               </button>
             </div>
           </div>
@@ -300,8 +320,8 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
                     : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
                 }`}
               >
-                <div className="font-semibold text-[10px]">Small</div>
-                <div className="text-[9px] text-emerald-300/70">4-5 seat</div>
+                <div className="font-semibold text-xs">Small</div>
+                <div className="text-xs text-emerald-300/70">4-5 seat</div>
               </button>
               <button
                 type="button"
@@ -312,8 +332,8 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
                     : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
                 }`}
               >
-                <div className="font-semibold text-[10px]">Big</div>
-                <div className="text-[9px] text-emerald-300/70">6-7 seat</div>
+                <div className="font-semibold text-xs">Big</div>
+                <div className="text-xs text-emerald-300/70">6-7 seat</div>
               </button>
               <button
                 type="button"
@@ -324,13 +344,12 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
                     : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
                 }`}
               >
-                <div className="font-semibold text-[10px]">Tempo</div>
-                <div className="text-[9px] text-emerald-300/70">10-12 seat</div>
+                <div className="font-semibold text-xs">Tempo</div>
+                <div className="text-xs text-emerald-300/70">10-12 seat</div>
               </button>
             </div>
           </div>
 
-          {/* Special Requests */}
           <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-2">
             <h4 className="text-emerald-400 font-semibold mb-1.5 flex items-center gap-1.5 text-xs">
               <MessageSquare className="w-3.5 h-3.5" />
@@ -345,7 +364,6 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
             />
           </div>
 
-          {/* Submit Buttons */}
           <div className="flex gap-1.5">
             <button
               type="submit"
