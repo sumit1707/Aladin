@@ -12,6 +12,7 @@ import { BookingFormData } from './components/BookingForm';
 import { useAuth } from './contexts/AuthContext';
 import { supabase } from './lib/supabase';
 import { User } from '@supabase/supabase-js';
+import AITest from "./components/AITest";
 import {
   TripFormData,
   HotelOption,
@@ -575,5 +576,16 @@ function App() {
     </div>
   );
 }
+
+function App() {
+  return (
+    <div>
+      {/* your existing UI */}
+      <AITest />
+    </div>
+  );
+}
+
+export default App;
 
 export default App;
