@@ -17,6 +17,15 @@ interface ItineraryViewProps {
   onBackToDestinations?: () => void;
   onBookingSubmit?: (bookingData: BookingFormData, customerDetails: { name: string; email: string; phone: string }) => Promise<void>;
   saving: boolean;
+  startDate?: string;
+  endDate?: string;
+  days?: number;
+  travelMode?: string;
+  startLocation?: string;
+  month?: string;
+  groupType?: string;
+  theme?: string[];
+  mood?: string;
 }
 
 export default function ItineraryView({
@@ -30,7 +39,16 @@ export default function ItineraryView({
   onBack,
   onBackToDestinations,
   onBookingSubmit,
-  saving
+  saving,
+  startDate,
+  endDate,
+  days,
+  travelMode,
+  startLocation,
+  month,
+  groupType,
+  theme,
+  mood
 }: ItineraryViewProps) {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [showBookingForm, setShowBookingForm] = useState(false);
@@ -236,6 +254,15 @@ export default function ItineraryView({
         <BookingForm
           destinationName={destinationName}
           tripBudget={tripBudget}
+          startDate={startDate}
+          endDate={endDate}
+          days={days}
+          travelMode={travelMode}
+          startLocation={startLocation}
+          month={month}
+          groupType={groupType}
+          theme={theme}
+          mood={mood}
           onClose={() => setShowBookingForm(false)}
           onSubmit={handleBookingFormSubmit}
         />

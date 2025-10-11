@@ -444,12 +444,12 @@ function App() {
             />
           )}
 
-          {step === 'itinerary' && itinerary && selectedDestination && (
+          {step === 'itinerary' && itinerary && selectedDestination && formData && (
             <ItineraryView
               itinerary={itinerary.itinerary}
               totalCost={itinerary.total_estimated_cost_per_person}
               destinationName={selectedDestination.title}
-              tripBudget={formData?.budget}
+              tripBudget={formData.budget}
               summaryMessage={itinerary.summary_message}
               onSave={handleSaveTrip}
               onExport={handleExportPDF}
@@ -457,6 +457,15 @@ function App() {
               onBackToDestinations={handleBackToDestinations}
               onBookingSubmit={handleBookingSubmit}
               saving={saving}
+              startDate={formData.startDate}
+              endDate={formData.endDate}
+              days={formData.days}
+              travelMode={formData.travelMode}
+              startLocation={formData.startLocation}
+              month={formData.month}
+              groupType={formData.groupType}
+              theme={formData.theme}
+              mood={formData.mood}
             />
           )}
 
