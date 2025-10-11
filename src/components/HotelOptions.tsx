@@ -26,6 +26,7 @@ interface HotelOptionsProps {
   startDate?: string;
   endDate?: string;
   days?: number;
+  month?: string;
   tripBudget?: string;
   onClose: () => void;
   onLogout: () => Promise<void>;
@@ -41,6 +42,7 @@ export default function HotelOptions({
   startDate,
   endDate,
   days,
+  month,
   tripBudget,
   onClose,
   onLogout
@@ -512,10 +514,12 @@ export default function HotelOptions({
               <div className="bg-black/40 border border-emerald-500/40 rounded-lg p-4">
                 <h3 className="text-xl font-bold text-emerald-400 mb-4">Booking Preferences</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {startDate && endDate && (
+                  {(startDate || endDate || month) && (
                     <div className="md:col-span-2">
-                      <div className="text-emerald-300/70 text-sm mb-1">Trip Dates</div>
-                      <div className="text-emerald-300 font-semibold text-base">{startDate} to {endDate}</div>
+                      <div className="text-emerald-300/70 text-sm mb-1">Travel Period</div>
+                      <div className="text-emerald-300 font-semibold text-base">
+                        {startDate && endDate ? `${startDate} to ${endDate}` : month ? `${month}` : 'Not specified'}
+                      </div>
                     </div>
                   )}
                   {days && (
@@ -528,6 +532,12 @@ export default function HotelOptions({
                     <div>
                       <div className="text-emerald-300/70 text-sm mb-1">Budget</div>
                       <div className="text-emerald-300 font-semibold text-base">{tripBudget}</div>
+                    </div>
+                  )}
+                  {travelMode && (
+                    <div>
+                      <div className="text-emerald-300/70 text-sm mb-1">Travel Mode</div>
+                      <div className="text-emerald-300 font-semibold text-base capitalize">{travelMode.replace('-', ' ')}</div>
                     </div>
                   )}
                   <div>

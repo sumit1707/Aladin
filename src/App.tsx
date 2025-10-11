@@ -496,6 +496,7 @@ function App() {
           startDate={formData.startDate}
           endDate={formData.endDate}
           days={formData.days}
+          month={formData.month}
           tripBudget={formData.budget}
           onClose={() => setShowHotelOptions(false)}
           onLogout={signOut}
