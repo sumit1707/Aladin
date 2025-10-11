@@ -132,8 +132,9 @@ export default function HotelOptions({
     setShowConfirmationModal(true);
   };
 
-  const handleCloseConfirmation = () => {
+  const handleCloseConfirmation = async () => {
     setShowConfirmationModal(false);
+    await onLogout();
     onClose();
   };
 

@@ -234,6 +234,9 @@ function App() {
       setSelectedDestination(null);
       setItinerary(null);
       setCurrentTripId(null);
+      setShowHotelOptions(false);
+      setHotelOptions([]);
+      setCurrentBookingData(null);
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -499,7 +502,7 @@ function App() {
           month={formData.month}
           tripBudget={formData.budget}
           onClose={() => setShowHotelOptions(false)}
-          onLogout={signOut}
+          onLogout={handleSignOut}
         />
       )}
     </div>
