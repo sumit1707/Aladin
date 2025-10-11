@@ -211,8 +211,10 @@ CRITICAL RULES:
 1. Calculate total_per_person correctly: ADD all 5 breakdown values
 2. Verify: total must equal sum of breakdown (travel + stay + food + local + activities)
 3. If total > ₹${budgetMax}, do NOT include that destination
-4. Return 1-5 destinations that match the visual inspiration and fit budget, or empty array if none fit
-5. MUST provide exactly 3 must-see attractions for EACH destination with video_link for each`
+4. Return EXACTLY 5 destinations that match the visual inspiration and fit budget (if fewer than 5 fit budget, return only those that fit)
+5. MUST provide exactly 3 must-see attractions for EACH destination with video_link for each
+6. Prioritize variety - include different types of destinations (popular spots, hidden gems, different regions)
+7. At least 1 destination should be marked as hidden_gem: true`
   }
 
   return `Find ${scope === 'National' ? 'India' : 'international'} destinations for:
@@ -307,8 +309,11 @@ CRITICAL RULES:
 1. Calculate total_per_person correctly: ADD all 5 breakdown values
 2. Verify: total must equal sum of breakdown (travel + stay + food + local + activities)
 3. If total > ₹${budgetMax}, do NOT include that destination
-4. Return 1-5 destinations that fit budget, or empty array if none fit
-5. MUST provide exactly 3 must-see attractions for EACH destination with video_link for each`;
+4. Return EXACTLY 5 destinations that fit budget (if fewer than 5 fit budget, return only those that fit)
+5. MUST provide exactly 3 must-see attractions for EACH destination with video_link for each
+6. Prioritize variety - include mix of popular destinations and hidden gems, different regions
+7. At least 1-2 destinations should be marked as hidden_gem: true
+8. Order by: Best match for preferences first, then alternatives`;
 };
 
 export const generateDestinations = async (formData: TripFormData): Promise<AIDestinationResponse> => {
