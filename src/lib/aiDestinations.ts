@@ -42,14 +42,16 @@ export interface AIDestinationResponse {
   destinations: DestinationOption[];
 }
 
-const AI_SYSTEM_PROMPT = `You are a realistic travel advisor for India-based travelers. Your job is to recommend destinations that FIT WITHIN BUDGET.
+const AI_SYSTEM_PROMPT = `You are a travel advisor for India-based travelers.
 
-CRITICAL RULES:
-1. Calculate ALL costs realistically: transport TO destination + hotels + food + local transport + activities
-2. If total cost > user's budget, DON'T include that destination
-3. Return 1-5 destinations that actually fit budget
-4. Use YouTube search URLs: https://www.youtube.com/results?search_query={place}+{attraction}
-5. Be honest - if budget is too low, return fewer destinations or empty array`;
+CRITICAL MATH RULE:
+total_per_person = travel_to_destination + stay + food + local_transport + activities
+
+EXAMPLE:
+If breakdown is {travel: 6000, stay: 9000, food: 8000, local: 4000, activities: 3000}
+Then total_per_person = 6000 + 9000 + 8000 + 4000 + 3000 = 30000
+
+DO NOT include destinations where total > user's budget.`;
 
 const generatePrompt = (formData: TripFormData): string => {
   const scope = formData.domesticOrIntl === 'Within India' ? 'National' : 'International';
@@ -69,25 +71,31 @@ TRIP DETAILS:
 - Interests: ${formData.theme.join(', ')}
 - BUDGET LIMIT: ₹${budgetMax} per person (TOTAL FOR EVERYTHING)
 
-COST CALCULATION (Be realistic):
+STEP-BY-STEP BUDGET CALCULATION:
 
-1. ${formData.travelMode} from ${formData.startLocation}:
-   ${formData.travelMode === 'Flight'
-     ? `Domestic: ₹5,000-₹12,000 | International: ₹20,000-₹45,000`
-     : formData.travelMode === 'Train'
-     ? `₹2,000-₹6,000 depending on distance`
-     : `₹1,000-₹4,000 depending on distance`}
+For EACH destination, calculate these 5 costs:
 
-2. Hotels (${formData.days - 1} nights):
-   Budget: ₹2,000/night | Mid: ₹5,000/night | Premium: ₹12,000/night
+1. travel_to_destination (${formData.travelMode} from ${formData.startLocation}):
+   ${formData.travelMode === 'Flight' ? `Domestic: ₹6,000-10,000 | International: ₹25,000-40,000` : ''}
+   ${formData.travelMode === 'Train' ? `₹2,000-5,000 depending on distance` : ''}
+   ${formData.travelMode === 'Bus' ? `₹1,000-3,000 depending on distance` : ''}
 
-3. Food (${formData.days} days): ₹1,500-₹3,000 per day
+2. stay (${formData.days - 1} nights × cost per night):
+   Budget tier: ₹2,500/night × ${formData.days - 1} = ₹${(formData.days - 1) * 2500}
+   Mid tier: ₹5,000/night × ${formData.days - 1} = ₹${(formData.days - 1) * 5000}
 
-4. Local transport + activities: ₹1,000/day total
+3. food (${formData.days} days × cost per day):
+   ₹2,000/day × ${formData.days} = ₹${formData.days * 2000}
 
-Calculate: transport + (hotel × nights) + (food × days) + (₹1000 × days)
+4. local_transport (within destination):
+   ₹1,000/day × ${formData.days} = ₹${formData.days * 1000}
 
-If TOTAL > ₹${budgetMax}: DON'T include this destination
+5. activities (tours, entry fees):
+   ₹2,000-4,000 for entire trip
+
+total_per_person = (1) + (2) + (3) + (4) + (5)
+
+VERIFY: If total_per_person > ₹${budgetMax}, REJECT this destination
 
 REQUIREMENTS:
 - ${scope === 'National' ? 'Only destinations within India' : 'International destinations with easy visa access'}
@@ -111,15 +119,16 @@ Return JSON:
         {"name": "Place", "reason": "Why visit", "video_link": "https://www.youtube.com/results?search_query=City+Place"}
       ],
       "approx_budget": {
-        "total_per_person": ${Math.floor(budgetMax * 0.95)},
         "breakdown": {
-          "travel_to_destination": 6000,
-          "stay": ${Math.floor((formData.days - 1) * 2500)},
-          "food": ${formData.days * 1500},
-          "local_transport": ${formData.days * 800},
-          "activities": 2000
-        }
+          "travel_to_destination": 8000,
+          "stay": ${(formData.days - 1) * 5000},
+          "food": ${formData.days * 2000},
+          "local_transport": ${formData.days * 1000},
+          "activities": 3000
+        },
+        "total_per_person": ${8000 + ((formData.days - 1) * 5000) + (formData.days * 2000) + (formData.days * 1000) + 3000}
       },
+      "_calculation_note": "total = 8000 + ${(formData.days - 1) * 5000} + ${formData.days * 2000} + ${formData.days * 1000} + 3000 = ${8000 + ((formData.days - 1) * 5000) + (formData.days * 2000) + (formData.days * 1000) + 3000}",
       "pros": ["Benefit 1", "Benefit 2"],
       "con": "One realistic drawback",
       "best_months": "Oct-Mar",
@@ -131,7 +140,11 @@ Return JSON:
   ]
 }
 
-IMPORTANT: If no destinations fit ₹${budgetMax}, return {"destinations": []}`;
+CRITICAL RULES:
+1. Calculate total_per_person correctly: ADD all 5 breakdown values
+2. Verify: total must equal sum of breakdown (travel + stay + food + local + activities)
+3. If total > ₹${budgetMax}, do NOT include that destination
+4. Return 1-5 destinations that fit budget, or empty array if none fit`;
 };
 
 export const generateDestinations = async (formData: TripFormData): Promise<AIDestinationResponse> => {
