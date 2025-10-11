@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Mail, Lock, User, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import GenieIllustration from './GenieIllustration';
 
 interface SignupPageProps {
   onSwitchToLogin: () => void;
@@ -45,31 +44,32 @@ export default function SignupPage({ onSwitchToLogin }: SignupPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4 overflow-hidden relative">
+    <div className="min-h-screen bg-black flex overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-400/15 via-green-500/5 to-transparent"></div>
 
-      <div className="w-full max-w-7xl mx-auto flex items-center justify-between relative z-10">
-        <div className="flex-1 flex items-center justify-center">
-          <div className="relative animate-float">
-            <GenieIllustration />
-
-            <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center">
-              <h2 className="text-3xl font-bold text-emerald-400 mb-2 animate-pulse">
+      <div className="w-full flex items-center justify-center relative z-10">
+        <div className="flex flex-row items-center justify-center gap-56 p-8 max-w-7xl mx-auto">
+          <div className="relative max-w-sm flex-shrink-0">
+            <img
+              src="/image copy.png"
+              alt="Genie"
+              className="w-full h-auto object-contain animate-float drop-shadow-2xl scale-115"
+            />
+            <div className="text-center mt-4">
+              <h2 className="text-lg font-bold mb-1 tracking-wide text-emerald-400">
                 Join Us!
               </h2>
-              <p className="text-emerald-300 text-lg">Start Planning Today</p>
+              <p className="text-xs text-emerald-300">Start Planning Today</p>
             </div>
           </div>
-        </div>
 
-        <div className="flex-1 flex items-center justify-center">
-          <div className="w-full max-w-md">
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold mb-2" style={{ color: '#D4AF37' }}>Create Account</h1>
-              <p className="text-emerald-300">Join our travel community</p>
+          <div className="w-full max-w-lg scale-115 -translate-y-12">
+            <div className="text-center mb-6 scale-125">
+              <h1 className="text-3xl font-bold mb-2" style={{ color: '#D4AF37' }}>Create Account</h1>
+              <p className="text-emerald-300 text-sm">Join our travel community</p>
             </div>
 
-            <div className="bg-emerald-900/30 backdrop-blur-md border-2 border-emerald-500/40 rounded-2xl p-8 shadow-2xl">
+            <div className="bg-emerald-900/30 backdrop-blur-md border-2 border-emerald-500/40 rounded-2xl p-8 shadow-2xl scale-125">
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <div className="relative">
@@ -155,6 +155,29 @@ export default function SignupPage({ onSwitchToLogin }: SignupPageProps) {
         </div>
       </div>
 
+      <div className="absolute bottom-0 left-0 right-0 py-4 z-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+            <div className="feature-item">
+              <div className="text-emerald-300 font-semibold text-base">Customized Itinerary</div>
+              <div className="text-emerald-400/80 text-sm mt-1">Tailored to your preferences</div>
+            </div>
+            <div className="feature-item">
+              <div className="text-emerald-300 font-semibold text-base">Budget-Friendly Plans</div>
+              <div className="text-emerald-400/80 text-sm mt-1">Plans that fit your budget</div>
+            </div>
+            <div className="feature-item">
+              <div className="text-emerald-300 font-semibold text-base">Time-Optimized</div>
+              <div className="text-emerald-400/80 text-sm mt-1">Perfect for your schedule</div>
+            </div>
+            <div className="feature-item">
+              <div className="text-emerald-300 font-semibold text-base">Your Recommendations</div>
+              <div className="text-emerald-400/80 text-sm mt-1">We value your input</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <style>{`
         @keyframes float {
           0%, 100% {
@@ -166,6 +189,27 @@ export default function SignupPage({ onSwitchToLogin }: SignupPageProps) {
         }
         .animate-float {
           animation: float 4s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+          0% {
+            background-position: -1000px 0;
+          }
+          100% {
+            background-position: 1000px 0;
+          }
+        }
+        .feature-item {
+          position: relative;
+          animation: shimmer 3s infinite linear;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(16, 185, 129, 0.1) 50%,
+            transparent 100%
+          );
+          background-size: 1000px 100%;
+          padding: 8px;
+          border-radius: 8px;
         }
       `}</style>
     </div>
