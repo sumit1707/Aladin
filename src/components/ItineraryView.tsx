@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ItineraryDay, HotelOption } from '../lib/llm';
+import { HotelOption } from '../lib/llm';
+import { ItineraryDay } from '../lib/aiItinerary';
 import { Clock, DollarSign, Car, MapPin, Download, Save, ArrowLeft, X } from 'lucide-react';
 import BookingForm, { BookingFormData } from './BookingForm';
 import HotelOptions from './HotelOptions';
@@ -9,6 +10,7 @@ interface ItineraryViewProps {
   totalCost: number;
   destinationName: string;
   tripBudget?: string;
+  summaryMessage?: string;
   onSave: () => void;
   onExport: () => void;
   onBack: () => void;
@@ -22,6 +24,7 @@ export default function ItineraryView({
   totalCost,
   destinationName,
   tripBudget,
+  summaryMessage,
   onSave,
   onExport,
   onBack,
@@ -185,6 +188,11 @@ export default function ItineraryView({
             All costs are approximate. Please verify with live sources for exact pricing.
           </p>
         </div>
+        {summaryMessage && (
+          <div className="mt-4 pt-4 border-t border-emerald-500/30 text-center">
+            <p className="text-emerald-300 text-lg font-medium">{summaryMessage}</p>
+          </div>
+        )}
       </div>
 
       {showBookingModal && (

@@ -11,13 +11,12 @@ import { useAuth } from './contexts/AuthContext';
 import { supabase } from './lib/supabase';
 import {
   TripFormData,
-  ItineraryResponse,
   HotelOption,
-  generateItineraryPrompt,
   generateHotelPrompt,
   mockLLMCall
 } from './lib/llm';
 import { generateDestinations, DestinationOption } from './lib/aiDestinations';
+import { generateAIItinerary, ItineraryDay } from './lib/aiItinerary';
 import AIDestinationResults from './components/AIDestinationResults';
 import { exportItineraryToPDF } from './lib/pdfExport';
 import { Plane, LogOut, BookmarkCheck } from 'lucide-react';
@@ -34,7 +33,7 @@ function App() {
   const [formData, setFormData] = useState<TripFormData | null>(null);
   const [destinations, setDestinations] = useState<DestinationOption[]>([]);
   const [selectedDestination, setSelectedDestination] = useState<DestinationOption | null>(null);
-  const [itinerary, setItinerary] = useState<ItineraryResponse | null>(null);
+  const [itinerary, setItinerary] = useState<{ itinerary: ItineraryDay[], total_estimated_cost_per_person: number, summary_message?: string } | null>(null);
   const [currentTripId, setCurrentTripId] = useState<string | null>(null);
   const [showHotelOptions, setShowHotelOptions] = useState(false);
   const [hotelOptions, setHotelOptions] = useState<HotelOption[]>([]);
@@ -115,8 +114,17 @@ function App() {
         })
         .eq('id', currentTripId);
 
-      const prompt = generateItineraryPrompt(destination, formData.days, formData.mood, formData.budget, formData.startLocation);
-      const response: ItineraryResponse = await mockLLMCall(prompt, true, formData.travelMode);
+      const response = await generateAIItinerary(
+        formData.startLocation,
+        destination.title,
+        formData.month,
+        formData.budget,
+        formData.groupType,
+        formData.theme,
+        formData.mood,
+        formData.travelMode,
+        formData.days
+      );
 
       await supabase
         .from('itineraries')
@@ -428,6 +436,7 @@ function App() {
               totalCost={itinerary.total_estimated_cost_per_person}
               destinationName={selectedDestination.title}
               tripBudget={formData?.budget}
+              summaryMessage={itinerary.summary_message}
               onSave={handleSaveTrip}
               onExport={handleExportPDF}
               onBack={handleStartNew}
