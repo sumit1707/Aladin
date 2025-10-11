@@ -143,7 +143,22 @@ function App() {
       setStep('ai-destinations');
     } catch (error) {
       console.error('Error generating destinations:', error);
-      setErrorMessage('Unable to generate travel destinations at this time. Please check your internet connection and try again.');
+
+      let errorMsg = 'Unable to generate travel destinations at this time.';
+
+      if (error instanceof Error) {
+        if (error.message.includes('API key')) {
+          errorMsg = 'AI service configuration error. Please contact support.';
+        } else if (error.message.includes('API error')) {
+          errorMsg = 'AI service is temporarily unavailable. Please try again in a few moments.';
+        } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+          errorMsg = 'Unable to connect to the AI service. Please check your internet connection and try again.';
+        } else {
+          errorMsg = `Error: ${error.message}. Please try again or contact support if the issue persists.`;
+        }
+      }
+
+      setErrorMessage(errorMsg);
     } finally {
       setLoading(false);
     }

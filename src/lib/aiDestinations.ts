@@ -319,13 +319,21 @@ CRITICAL RULES:
 export const generateDestinations = async (formData: TripFormData): Promise<AIDestinationResponse> => {
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
+  console.log('🚀 Starting destination generation...');
+  console.log('📍 From:', formData.startLocation);
+  console.log('📅 Duration:', formData.days, 'days');
+  console.log('💰 Budget:', formData.budget);
+
   if (!apiKey) {
+    console.error('❌ OpenAI API key not found in environment variables');
     throw new Error('OpenAI API key not configured');
   }
 
   try {
     const prompt = generatePrompt(formData);
     const hasVisualInspiration = !!(formData.inspirationImage || formData.inspirationVideoLink);
+
+    console.log('🤖 Using model:', hasVisualInspiration && formData.inspirationImage ? 'gpt-4o' : 'gpt-4o-mini');
 
     // If image is provided, use vision model with image content
     const userMessage = formData.inspirationImage
@@ -349,6 +357,8 @@ export const generateDestinations = async (formData: TripFormData): Promise<AIDe
           content: prompt
         };
 
+    console.log('📡 Calling OpenAI API...');
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -367,18 +377,25 @@ export const generateDestinations = async (formData: TripFormData): Promise<AIDe
       })
     });
 
+    console.log('📡 API Response status:', response.status, response.statusText);
+
     if (!response.ok) {
-      throw new Error(`API error: ${response.statusText}`);
+      const errorBody = await response.text();
+      console.error('❌ API Error Response:', errorBody);
+      throw new Error(`API error (${response.status}): ${response.statusText}`);
     }
 
     const data = await response.json();
     const content = data.choices[0]?.message?.content;
 
     if (!content) {
+      console.error('❌ No content in AI response:', data);
       throw new Error('No response from AI');
     }
 
+    console.log('✅ Received AI response, parsing JSON...');
     const result = JSON.parse(content);
+    console.log('📊 Found', result.destinations?.length || 0, 'destinations');
 
     // Check for validation error (invalid image/video content)
     if (result.error === 'invalid_content') {
@@ -416,9 +433,17 @@ export const generateDestinations = async (formData: TripFormData): Promise<AIDe
       console.log(`📊 Final: ${result.destinations.length} destinations`);
     }
 
+    console.log('✨ Destination generation complete!');
     return result;
   } catch (error) {
-    console.error('Error generating destinations:', error);
+    console.error('💥 Error generating destinations:', error);
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      });
+    }
     throw error;
   }
 };
