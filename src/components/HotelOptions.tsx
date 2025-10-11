@@ -401,6 +401,7 @@ export default function HotelOptions({
         <div className="flex-1 overflow-y-auto p-6">
           {activeTab === 'hotels' ? (
             <div className="space-y-4 max-w-7xl mx-auto">
+              <h3 className="text-2xl font-bold text-emerald-400 mb-6 text-center">Our Recommended Hotels</h3>
               {hotels.map((hotel) => (
                 <div
                   key={hotel.id}

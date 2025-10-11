@@ -303,11 +303,20 @@ export const generateHotelPrompt = (
   const totalGuests = adults + children + seniors;
   const starCategory = roomType.replace('-star', '');
 
+  let priceRange = '';
+  if (roomType === '3-star') {
+    priceRange = budget === 'Budget (<₹20k)' ? '₹1,200-2,500' : budget === 'Mid-range (₹20k-₹50k)' ? '₹2,000-3,500' : '₹3,000-5,000';
+  } else if (roomType === '4-star') {
+    priceRange = budget === 'Budget (<₹20k)' ? '₹2,500-4,000' : budget === 'Mid-range (₹20k-₹50k)' ? '₹4,000-7,000' : '₹6,000-10,000';
+  } else if (roomType === '5-star') {
+    priceRange = budget === 'Budget (<₹20k)' ? '₹4,000-6,000' : budget === 'Mid-range (₹20k-₹50k)' ? '₹6,000-12,000' : '₹10,000-25,000';
+  }
+
   const budgetGuidelines = budget === 'Budget (<₹20k)'
-    ? '- STRICT BUDGET: Focus on budget-friendly, value-for-money accommodations\n- Prefer guesthouses, homestays, and budget hotels\n- Prioritize clean, safe properties with basic amenities\n- Price range MUST be: ₹1,200-2,500 per night\n- NO luxury properties or high-end amenities'
+    ? `- STRICT BUDGET: Focus on budget-friendly, value-for-money accommodations\n- Prefer guesthouses, homestays, and budget hotels\n- Prioritize clean, safe properties with basic amenities\n- Price range MUST be: ${priceRange} per night for ${roomType} hotels\n- NO luxury properties or high-end amenities`
     : budget === 'Mid-range (₹20k-₹50k)'
-    ? '- MODERATE BUDGET: Balance comfort with value\n- Focus on comfortable 3-4 star hotels with good amenities\n- Standard amenities expected: WiFi, AC, restaurant, room service\n- Price range MUST be: ₹2,500-6,000 per night\n- Avoid ultra-luxury properties'
-    : '- LUXURY BUDGET: Premium experiences and top-tier accommodations\n- Focus on 4-5 star luxury hotels and resorts\n- Premium amenities: spa, fine dining, concierge, exclusive experiences\n- Price range: ₹6,000-20,000+ per night\n- Emphasize luxury, comfort, and exceptional service';
+    ? `- MODERATE BUDGET: Balance comfort with value\n- Focus on comfortable 3-4 star hotels with good amenities\n- Standard amenities expected: WiFi, AC, restaurant, room service\n- Price range MUST be: ${priceRange} per night for ${roomType} hotels\n- Avoid ultra-luxury properties`
+    : `- LUXURY BUDGET: Premium experiences and top-tier accommodations\n- Focus on 4-5 star luxury hotels and resorts\n- Premium amenities: spa, fine dining, concierge, exclusive experiences\n- Price range MUST be: ${priceRange} per night for ${roomType} hotels\n- Emphasize luxury, comfort, and exceptional service`;
 
   return `Recommend 3 hotels in ${destinationName} for the following requirements:
 - Category: ${starCategory}-star hotels
@@ -320,8 +329,14 @@ ${budgetGuidelines}
 
 IMPORTANT: Hotels and amenities MUST strictly match the trip budget category. Do not recommend lavish 5-star properties for budget trips or basic guesthouses for luxury trips.
 
+STAR RATING REQUIREMENTS:
+- Hotels MUST be authentic ${starCategory}-star rated properties
+- Amenities, service quality, and pricing MUST match ${starCategory}-star standards
+- Price range MUST be within: ${priceRange} per night
+- Do NOT recommend hotels below or above ${starCategory}-star category
+
 MATCHING CRITERIA:
-${roomType === '3-star' && budget === 'Budget (<₹20k)' ? '- Focus on clean, safe budget hotels\n- Basic amenities: WiFi, AC, clean rooms\n- Price: ₹1,500-3,000 per night\n- Good reviews for value and cleanliness' : ''}${roomType === '4-star' && budget === 'Mid-range (₹20k-₹50k)' ? '- Focus on comfortable upscale hotels\n- Standard amenities: Pool, gym, restaurant, room service\n- Price: ₹4,000-7,000 per night\n- Balance of comfort and value' : ''}${roomType === '5-star' && budget === 'Luxury (>₹50k)' ? '- Focus on luxury hotels and resorts\n- Premium amenities: Spa, fine dining, concierge, exclusive experiences\n- Price: ₹8,000-20,000+ per night\n- Exceptional service and lavish accommodations' : ''}
+${roomType === '3-star' ? `- Focus on clean, comfortable 3-star hotels\n- Standard amenities: WiFi, AC, TV, clean rooms, restaurant\n- Price MUST be: ${priceRange} per night\n- Good reviews for value and service` : ''}${roomType === '4-star' ? `- Focus on comfortable upscale 4-star hotels\n- Enhanced amenities: Pool, gym, restaurant, room service, concierge\n- Price MUST be: ${priceRange} per night\n- Superior comfort and service standards` : ''}${roomType === '5-star' ? `- Focus on luxury 5-star hotels and resorts\n- Premium amenities: Spa, fine dining, concierge, exclusive experiences, premium rooms\n- Price MUST be: ${priceRange} per night\n- Exceptional service and lavish accommodations` : ''}
 
 For each hotel include:
 - Real hotel name (existing property in ${destinationName})
