@@ -285,7 +285,8 @@ function App() {
         bookingData.children,
         bookingData.seniors,
         bookingData.specialRequests,
-        formData.budget
+        formData.budget,
+        bookingData.hasPets
       );
 
       const hotelResponse = await mockLLMCall(hotelPrompt);

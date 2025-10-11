@@ -298,7 +298,8 @@ export const generateHotelPrompt = (
   children: number,
   seniors: number,
   specialRequests: string,
-  budget?: string
+  budget?: string,
+  hasPets?: boolean
 ): string => {
   const totalGuests = adults + children + seniors;
   const starCategory = roomType.replace('-star', '');
@@ -322,12 +323,21 @@ export const generateHotelPrompt = (
 - Category: ${starCategory}-star hotels
 - Trip Budget: ${budget || 'Not specified'}
 - Guests: ${adults} adults${children > 0 ? `, ${children} children` : ''}${seniors > 0 ? `, ${seniors} seniors` : ''} (Total: ${totalGuests} people)
+- Pets: ${hasPets ? 'YES - Customer is traveling with pets' : 'NO - No pets'}
 - Special Requests: ${specialRequests || 'None'}
 
 CRITICAL BUDGET ALIGNMENT:
 ${budgetGuidelines}
 
 IMPORTANT: Hotels and amenities MUST strictly match the trip budget category. Do not recommend lavish 5-star properties for budget trips or basic guesthouses for luxury trips.
+
+${hasPets ? `CRITICAL PET REQUIREMENTS:
+- ALL recommended hotels MUST be PET-FRIENDLY
+- Hotels must explicitly allow pets/animals
+- Mention pet-friendly amenities in the description (e.g., pet beds, pet bowls, pet walking areas)
+- Include "Pet-Friendly" in the highlights
+- Verify the hotel has policies accommodating pets
+- Do NOT recommend hotels that do not allow pets` : ''}
 
 STAR RATING REQUIREMENTS:
 - Hotels MUST be authentic ${starCategory}-star rated properties
@@ -342,12 +352,12 @@ For each hotel include:
 - Real hotel name (existing property in ${destinationName})
 - Accurate ${starCategory}-star category description
 - Valid Pexels image URL (use actual Pexels URLs for hotels/resorts)
-- 4-5 key amenities matching the star category
+- 4-5 key amenities matching the star category${hasPets ? ' (MUST include pet-friendly amenities like "Pet-Friendly Rooms", "Pet Walking Area", etc.)' : ''}
 - Price per night in ₹ (realistic for ${starCategory}-star)
 - Rating out of 5
 - Specific location in ${destinationName}
 - Booking link
-- 3-4 highlights that make it special
+- 3-4 highlights that make it special${hasPets ? ' (MUST include pet-related highlights)' : ''}
 
 RETURN ONLY VALID JSON:
 {
