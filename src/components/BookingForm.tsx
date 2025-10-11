@@ -177,7 +177,7 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-emerald-300 text-xs">Seniors</span>
+                <span className="text-emerald-300 text-xs">Sr citizen above 60 yrs or physically challenged</span>
                 <div className="flex items-center gap-1.5">
                   <button
                     type="button"
