@@ -204,7 +204,6 @@ function App() {
         itinerary.total_estimated_cost_per_person
       );
       console.log('PDF export completed successfully');
-      alert('PDF exported successfully!');
     } catch (error) {
       console.error('Error exporting PDF:', error);
       alert('Failed to export PDF: ' + (error instanceof Error ? error.message : 'Unknown error'));
