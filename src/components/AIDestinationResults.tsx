@@ -120,7 +120,7 @@ export default function AIDestinationResults({ destinations, onSelectDestination
                   <span className="text-xs text-emerald-400/70 font-semibold">Budget</span>
                 </div>
                 <p className="text-emerald-300 text-sm font-medium">
-                  ₹{destination.approx_budget.total_per_person.toLocaleString()}
+                  ₹{(destination.approx_budget?.total_per_person || 0).toLocaleString()}
                 </p>
                 <p className="text-emerald-300/70 text-xs">per person</p>
               </div>
@@ -198,11 +198,12 @@ export default function AIDestinationResults({ destinations, onSelectDestination
 
             <div className="bg-emerald-500/10 rounded-lg p-3 border border-emerald-500/20 mb-4">
               <p className="text-emerald-300/80 text-xs">
-                <span className="font-semibold text-emerald-300">Budget Breakdown:</span> Stay ₹
-                {destination.approx_budget.breakdown.stay.toLocaleString()} • Food ₹
-                {destination.approx_budget.breakdown.food.toLocaleString()} • Transport ₹
-                {destination.approx_budget.breakdown.transport.toLocaleString()} • Activities ₹
-                {destination.approx_budget.breakdown.activities.toLocaleString()}
+                <span className="font-semibold text-emerald-300">Budget Breakdown:</span> Travel ₹
+                {((destination.approx_budget.breakdown.travel_to_destination || destination.approx_budget.breakdown.transport || 0)).toLocaleString()} • Stay ₹
+                {(destination.approx_budget.breakdown.stay || 0).toLocaleString()} • Food ₹
+                {(destination.approx_budget.breakdown.food || 0).toLocaleString()} • Local Transport ₹
+                {(destination.approx_budget.breakdown.local_transport || 0).toLocaleString()} • Activities ₹
+                {(destination.approx_budget.breakdown.activities || 0).toLocaleString()}
               </p>
             </div>
 
