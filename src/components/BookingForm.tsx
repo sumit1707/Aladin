@@ -33,7 +33,6 @@ export interface BookingFormData {
   hasPets: boolean;
 }
 
-type TabType = 'details' | 'confirm';
 
 export default function BookingForm({
   onClose,
@@ -56,7 +55,6 @@ export default function BookingForm({
     return '4-star';
   };
 
-  const [activeTab, setActiveTab] = useState<TabType>('details');
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState<BookingFormData>({
     adults: 1,
@@ -76,19 +74,6 @@ export default function BookingForm({
 
   const [hasConfirmed, setHasConfirmed] = useState(false);
 
-  const handleContinueToConfirm = () => {
-    if (!formData.customerName.trim() || !formData.customerEmail.trim() || !formData.customerPhone.trim()) {
-      alert('Please fill in all customer details');
-      return;
-    }
-
-    if (formData.adults === 0) {
-      alert('At least one adult is required');
-      return;
-    }
-
-    setActiveTab('confirm');
-  };
 
   const handleConfirmAndSubmit = async () => {
     if (!hasConfirmed) {
@@ -134,366 +119,7 @@ export default function BookingForm({
           Trip to <span className="font-semibold text-emerald-400">{destinationName}</span>
         </p>
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-4 border-b border-emerald-500/30">
-          <button
-            type="button"
-            onClick={() => setActiveTab('details')}
-            className={`px-4 py-2 text-sm font-semibold transition-all ${
-              activeTab === 'details'
-                ? 'text-emerald-400 border-b-2 border-emerald-500'
-                : 'text-emerald-300/60 hover:text-emerald-300'
-            }`}
-          >
-            Hotel Recommended
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              if (!formData.customerName.trim() || !formData.customerEmail.trim() || !formData.customerPhone.trim()) {
-                alert('Please fill in all required fields first');
-                return;
-              }
-              setActiveTab('confirm');
-            }}
-            className={`px-4 py-2 text-sm font-semibold transition-all ${
-              activeTab === 'confirm'
-                ? 'text-emerald-400 border-b-2 border-emerald-500'
-                : 'text-emerald-300/60 hover:text-emerald-300'
-            }`}
-          >
-            Confirm Your Input
-          </button>
-        </div>
-
-        {/* Details Tab */}
-        {activeTab === 'details' && (
-          <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
-            <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-3">
-              <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-2 text-sm">
-                <UserIcon className="w-4 h-4" />
-                Contact Details
-              </h4>
-              <div className="space-y-2">
-                <input
-                  type="text"
-                  required
-                  value={formData.customerName}
-                  onChange={(e) => setFormData(prev => ({ ...prev, customerName: e.target.value }))}
-                  placeholder="Full Name *"
-                  className="w-full bg-black/60 border border-emerald-500/30 rounded px-3 py-2 text-sm text-emerald-300 placeholder-emerald-500/50 focus:outline-none focus:border-emerald-500"
-                />
-                <input
-                  type="email"
-                  required
-                  value={formData.customerEmail}
-                  onChange={(e) => setFormData(prev => ({ ...prev, customerEmail: e.target.value }))}
-                  placeholder="Email Address *"
-                  className="w-full bg-black/60 border border-emerald-500/30 rounded px-3 py-2 text-sm text-emerald-300 placeholder-emerald-500/50 focus:outline-none focus:border-emerald-500"
-                />
-                <input
-                  type="tel"
-                  required
-                  value={formData.customerPhone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, customerPhone: e.target.value }))}
-                  placeholder="Phone Number *"
-                  className="w-full bg-black/60 border border-emerald-500/30 rounded px-3 py-2 text-sm text-emerald-300 placeholder-emerald-500/50 focus:outline-none focus:border-emerald-500"
-                />
-              </div>
-            </div>
-
-            <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-3">
-              <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-2 text-sm">
-                <Users className="w-4 h-4" />
-                Travelers
-              </h4>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-300 text-sm">Adults</span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('adults', -1)}
-                      className="w-8 h-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-sm font-semibold"
-                    >
-                      -
-                    </button>
-                    <span className="text-emerald-400 font-semibold w-8 text-center text-sm">{formData.adults}</span>
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('adults', 1)}
-                      className="w-8 h-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-sm font-semibold"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-300 text-sm">Children (under 5 yrs)</span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('children', -1)}
-                      className="w-8 h-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-sm font-semibold"
-                    >
-                      -
-                    </button>
-                    <span className="text-emerald-400 font-semibold w-8 text-center text-sm">{formData.children}</span>
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('children', 1)}
-                      className="w-8 h-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-sm font-semibold"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-emerald-300 text-sm">Sr citizen (above 60 yrs) or physically challenged</span>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('seniors', -1)}
-                      className="w-8 h-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-sm font-semibold"
-                    >
-                      -
-                    </button>
-                    <span className="text-emerald-400 font-semibold w-8 text-center text-sm">{formData.seniors}</span>
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('seniors', 1)}
-                      className="w-8 h-8 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-sm font-semibold"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-3">
-              <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-2 text-sm">
-                <PawPrint className="w-4 h-4" />
-                Pets (if any)
-              </h4>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, hasPets: true }))}
-                  className={`py-2 px-4 rounded border-2 transition-all text-sm font-semibold ${
-                    formData.hasPets
-                      ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
-                      : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
-                  }`}
-                >
-                  Yes
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, hasPets: false }))}
-                  className={`py-2 px-4 rounded border-2 transition-all text-sm font-semibold ${
-                    !formData.hasPets
-                      ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
-                      : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
-                  }`}
-                >
-                  No
-                </button>
-              </div>
-            </div>
-
-            <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-3">
-              <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-2 text-sm">
-                <Bed className="w-4 h-4" />
-                Room Type
-              </h4>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, roomType: '3-star' }))}
-                  className={`py-2 px-3 rounded border-2 transition-all ${
-                    formData.roomType === '3-star'
-                      ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
-                      : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
-                  }`}
-                >
-                  <div className="font-semibold text-sm">3-Star</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, roomType: '4-star' }))}
-                  className={`py-2 px-3 rounded border-2 transition-all ${
-                    formData.roomType === '4-star'
-                      ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
-                      : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
-                  }`}
-                >
-                  <div className="font-semibold text-sm">4-Star</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, roomType: '5-star' }))}
-                  className={`py-2 px-3 rounded border-2 transition-all ${
-                    formData.roomType === '5-star'
-                      ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
-                      : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
-                  }`}
-                >
-                  <div className="font-semibold text-sm">5-Star</div>
-                </button>
-              </div>
-
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <div className="flex items-center justify-between bg-black/40 rounded p-2">
-                  <span className="text-emerald-300 text-xs">Number of Hotels</span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('numberOfHotels', -1)}
-                      className="w-6 h-6 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-xs"
-                    >
-                      -
-                    </button>
-                    <span className="text-emerald-400 font-semibold w-6 text-center text-xs">{formData.numberOfHotels}</span>
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('numberOfHotels', 1)}
-                      className="w-6 h-6 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-xs"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between bg-black/40 rounded p-2">
-                  <span className="text-emerald-300 text-xs">Number of Rooms</span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('numberOfRooms', -1)}
-                      className="w-6 h-6 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-xs"
-                    >
-                      -
-                    </button>
-                    <span className="text-emerald-400 font-semibold w-6 text-center text-xs">{formData.numberOfRooms}</span>
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('numberOfRooms', 1)}
-                      className="w-6 h-6 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-xs"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-3">
-              <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-2 text-sm">
-                <Car className="w-4 h-4" />
-                Vehicle Type
-              </h4>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, vehicleType: 'small-car' }))}
-                  className={`py-2 px-2 rounded border-2 transition-all ${
-                    formData.vehicleType === 'small-car'
-                      ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
-                      : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
-                  }`}
-                >
-                  <div className="font-semibold text-xs">Small</div>
-                  <div className="text-[10px] text-emerald-300/70">4-5 seat</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, vehicleType: 'big-car' }))}
-                  className={`py-2 px-2 rounded border-2 transition-all ${
-                    formData.vehicleType === 'big-car'
-                      ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
-                      : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
-                  }`}
-                >
-                  <div className="font-semibold text-xs">Big</div>
-                  <div className="text-[10px] text-emerald-300/70">6-7 seat</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, vehicleType: 'tempo' }))}
-                  className={`py-2 px-2 rounded border-2 transition-all ${
-                    formData.vehicleType === 'tempo'
-                      ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
-                      : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
-                  }`}
-                >
-                  <div className="font-semibold text-xs">Tempo</div>
-                  <div className="text-[10px] text-emerald-300/70">10-12 seat</div>
-                </button>
-              </div>
-
-              <div className="mt-3">
-                <div className="flex items-center justify-between bg-black/40 rounded p-2">
-                  <span className="text-emerald-300 text-xs">Number of Cars</span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('numberOfCars', -1)}
-                      className="w-6 h-6 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-xs"
-                    >
-                      -
-                    </button>
-                    <span className="text-emerald-400 font-semibold w-6 text-center text-xs">{formData.numberOfCars}</span>
-                    <button
-                      type="button"
-                      onClick={() => updateNumber('numberOfCars', 1)}
-                      className="w-6 h-6 bg-emerald-600 hover:bg-emerald-700 text-white rounded transition-colors text-xs"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-3">
-              <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-2 text-sm">
-                <MessageSquare className="w-4 h-4" />
-                Special Requests
-              </h4>
-              <textarea
-                value={formData.specialRequests}
-                onChange={(e) => setFormData(prev => ({ ...prev, specialRequests: e.target.value }))}
-                placeholder="Any special requests or changes..."
-                rows={3}
-                className="w-full bg-black/60 border border-emerald-500/30 rounded px-3 py-2 text-sm text-emerald-300 placeholder-emerald-500/50 focus:outline-none focus:border-emerald-500 resize-none"
-              />
-            </div>
-
-            <div className="flex gap-2 pt-2">
-              <button
-                type="button"
-                onClick={handleContinueToConfirm}
-                className="flex-1 py-2 px-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded font-semibold text-sm transition-all shadow-lg shadow-emerald-500/30"
-              >
-                Continue to Confirm
-              </button>
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 border border-emerald-500/50 text-emerald-300 rounded hover:bg-emerald-900/30 transition-colors font-semibold text-sm"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Confirm Tab */}
-        {activeTab === 'confirm' && (
+        {/* Form Content - Confirm Your Input */}
           <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
             <div className="bg-emerald-500/10 border border-emerald-500/40 rounded-lg p-3 mb-3">
               <p className="text-emerald-300 text-xs text-center">
@@ -684,13 +310,10 @@ export default function BookingForm({
             <div className="flex gap-2 pt-2">
               <button
                 type="button"
-                onClick={() => {
-                  setActiveTab('details');
-                  setHasConfirmed(false);
-                }}
+                onClick={onClose}
                 className="px-4 py-2 border border-emerald-500/50 text-emerald-300 rounded hover:bg-emerald-900/30 transition-colors font-semibold text-sm"
               >
-                Back to Edit
+                Cancel
               </button>
               <button
                 type="button"
@@ -703,7 +326,6 @@ export default function BookingForm({
               </button>
             </div>
           </div>
-        )}
       </div>
     </div>
   );
