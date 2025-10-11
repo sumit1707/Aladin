@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import TripForm from './components/TripForm';
 import DestinationCards from './components/DestinationCards';
 import ItineraryView from './components/ItineraryView';
@@ -9,6 +9,7 @@ import HotelOptions from './components/HotelOptions';
 import { BookingFormData } from './components/BookingForm';
 import { useAuth } from './contexts/AuthContext';
 import { supabase } from './lib/supabase';
+import { User } from '@supabase/supabase-js';
 import {
   TripFormData,
   HotelOption,
@@ -38,6 +39,35 @@ function App() {
   const [showHotelOptions, setShowHotelOptions] = useState(false);
   const [hotelOptions, setHotelOptions] = useState<HotelOption[]>([]);
   const [currentBookingData, setCurrentBookingData] = useState<BookingFormData | null>(null);
+  const previousUserRef = useRef<User | null>(null);
+  const isInitialMount = useRef(true);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      previousUserRef.current = user;
+      return;
+    }
+
+    const wasLoggedOut = previousUserRef.current === null;
+    const isNowLoggedIn = user !== null;
+
+    if (wasLoggedOut && isNowLoggedIn) {
+      setStep('form');
+      setFormData(null);
+      setDestinations([]);
+      setSelectedDestination(null);
+      setItinerary(null);
+      setCurrentTripId(null);
+      setShowHotelOptions(false);
+      setHotelOptions([]);
+      setCurrentBookingData(null);
+      setLoading(false);
+      setSaving(false);
+    }
+
+    previousUserRef.current = user;
+  }, [user]);
 
   if (authLoading) {
     return (
