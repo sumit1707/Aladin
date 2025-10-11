@@ -125,7 +125,9 @@ Return JSON:
         "condition": "sunny/cloudy/rainy"
       },
       "must_sees": [
-        {"name": "Place", "reason": "Why visit", "video_link": "https://www.youtube.com/results?search_query=City+Place"}
+        {"name": "Attraction 1", "reason": "Why this is must-see", "video_link": "https://www.youtube.com/results?search_query=City+Attraction1"},
+        {"name": "Attraction 2", "reason": "Why this is must-see", "video_link": "https://www.youtube.com/results?search_query=City+Attraction2"},
+        {"name": "Attraction 3", "reason": "Why this is must-see", "video_link": "https://www.youtube.com/results?search_query=City+Attraction3"}
       ],
       "approx_budget": {
         "breakdown": {
@@ -153,7 +155,8 @@ CRITICAL RULES:
 1. Calculate total_per_person correctly: ADD all 5 breakdown values
 2. Verify: total must equal sum of breakdown (travel + stay + food + local + activities)
 3. If total > ₹${budgetMax}, do NOT include that destination
-4. Return 1-5 destinations that fit budget, or empty array if none fit`;
+4. Return 1-5 destinations that fit budget, or empty array if none fit
+5. MUST provide exactly 3 must-see attractions for EACH destination with video_link for each`;
 };
 
 export const generateDestinations = async (formData: TripFormData): Promise<AIDestinationResponse> => {
