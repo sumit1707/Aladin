@@ -45,6 +45,8 @@ export interface TripFormData {
   travelMode: string;
   startLocation: string;
   days: number;
+  inspirationImage?: string;
+  inspirationVideoLink?: string;
 }
 
 export interface DestinationOption {

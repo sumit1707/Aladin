@@ -19,9 +19,12 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
     travelMode: '',
     startLocation: '',
     days: 3,
+    inspirationImage: '',
+    inspirationVideoLink: '',
   });
 
   const [errors, setErrors] = useState<Partial<Record<keyof TripFormData, string>>>({});
+  const [imagePreview, setImagePreview] = useState<string>('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,6 +58,28 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
         ? prev.theme.filter(t => t !== theme)
         : [...prev.theme, theme]
     }));
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size should be less than 5MB');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setImagePreview(base64String);
+        setFormData(prev => ({ ...prev, inspirationImage: base64String }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImagePreview('');
+    setFormData(prev => ({ ...prev, inspirationImage: '' }));
   };
 
   return (
@@ -261,6 +286,66 @@ export default function TripForm({ onSubmit, loading }: TripFormProps) {
           />
           <span className="text-sm text-emerald-300">Are your dates flexible?</span>
         </label>
+      </div>
+
+      <div className="mt-6 pt-6 border-t border-emerald-500/30">
+        <h3 className="text-lg font-semibold text-emerald-300 mb-4">
+          Upload Inspiration (Optional)
+        </h3>
+        <p className="text-emerald-300/70 text-sm mb-4">
+          Share an image or video link that inspires your dream destination
+        </p>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-emerald-300 mb-2">
+              Upload Image
+            </label>
+            <div className="flex items-center gap-4">
+              <label className="cursor-pointer bg-black/50 border border-emerald-500/50 rounded-lg px-4 py-2 text-emerald-300 hover:bg-emerald-500/10 transition-all">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                <span className="text-sm">Choose Image</span>
+              </label>
+              {imagePreview && (
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="text-red-400 hover:text-red-300 text-sm"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+            {imagePreview && (
+              <div className="mt-3 relative w-full max-w-xs">
+                <img
+                  src={imagePreview}
+                  alt="Inspiration preview"
+                  className="w-full h-40 object-cover rounded-lg border border-emerald-500/50"
+                />
+              </div>
+            )}
+            <p className="text-emerald-300/50 text-xs mt-1">Max size: 5MB</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-emerald-300 mb-2">
+              Or paste a video link
+            </label>
+            <input
+              type="url"
+              placeholder="e.g., https://youtube.com/watch?v=..."
+              value={formData.inspirationVideoLink}
+              onChange={(e) => setFormData({ ...formData, inspirationVideoLink: e.target.value })}
+              className="w-full px-4 py-2 bg-black/50 border border-emerald-500/50 rounded-lg text-emerald-300 placeholder-emerald-600 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
+            />
+          </div>
+        </div>
       </div>
 
       <button
