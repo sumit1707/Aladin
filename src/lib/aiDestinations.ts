@@ -40,6 +40,8 @@ export interface DestinationOption {
 
 export interface AIDestinationResponse {
   destinations: DestinationOption[];
+  error?: string;
+  message?: string;
 }
 
 const AI_SYSTEM_PROMPT = `You are a travel advisor for India-based travelers.
@@ -69,7 +71,19 @@ const generatePrompt = (formData: TripFormData): string => {
 
 ${formData.inspirationVideoLink ? `VIDEO LINK: ${formData.inspirationVideoLink}
 
-Analyze this video to understand:
+FIRST: Verify this is a travel/location video showing:
+- Landscapes, scenery, or destinations
+- Cities, towns, or tourist attractions
+- Natural environments or outdoor settings
+
+If the video is NOT about a place/location (e.g., it's about people, products, animals, food close-ups, etc.), you MUST return:
+{
+  "error": "invalid_content",
+  "message": "Please upload a video link of a place or location to find similar destinations.",
+  "destinations": []
+}
+
+If valid, analyze the video to understand:
 - The landscape, scenery, and environment shown
 - The atmosphere, vibe, and mood
 - Activities and experiences featured
@@ -79,7 +93,20 @@ Analyze this video to understand:
 
 ${formData.inspirationImage ? `IMAGE PROVIDED: Customer has uploaded an inspiration image (base64 encoded).
 
-Carefully analyze the image to understand:
+FIRST: Verify this is a travel/location image showing:
+- Landscapes, scenery, or destinations
+- Cities, towns, or tourist attractions
+- Natural environments or outdoor settings
+- Architecture or landmarks
+
+If the image does NOT show a place/location (e.g., it's a selfie, food, products, animals, people portraits, abstract art, etc.), you MUST return:
+{
+  "error": "invalid_content",
+  "message": "Please upload an image of a place or location to find similar destinations.",
+  "destinations": []
+}
+
+If valid, carefully analyze the image to understand:
 - Type of landscape (mountains, beach, desert, city, forest, etc.)
 - Visual characteristics (colors, architecture, natural features)
 - Atmosphere and mood conveyed
@@ -88,7 +115,7 @@ Carefully analyze the image to understand:
 - Activities or scenes depicted
 ` : ''}
 
-YOUR TASK:
+YOUR TASK (ONLY if content is valid):
 Find destinations BOTH within India AND outside India that have similar views, vibes, and characteristics to what's shown in the ${formData.inspirationImage ? 'image' : 'video'}.
 
 TRIP CONSTRAINTS:
@@ -347,6 +374,16 @@ export const generateDestinations = async (formData: TripFormData): Promise<AIDe
     }
 
     const result = JSON.parse(content);
+
+    // Check for validation error (invalid image/video content)
+    if (result.error === 'invalid_content') {
+      console.log('❌ Invalid content detected:', result.message);
+      return {
+        destinations: [],
+        error: result.error,
+        message: result.message
+      };
+    }
 
     // Match the actual form values
     const budgetMax = formData.budget === '< ₹15,000' ? 15000

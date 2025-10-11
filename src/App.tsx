@@ -91,6 +91,24 @@ function App() {
     try {
       const response = await generateDestinations(data);
 
+      // Check if AI detected invalid image/video content
+      if (response.error === 'invalid_content') {
+        alert(response.message || 'Please upload an image or video link of a place/location.');
+        setLoading(false);
+        return;
+      }
+
+      // Check if no destinations were found
+      if (!response.destinations || response.destinations.length === 0) {
+        if (data.inspirationImage || data.inspirationVideoLink) {
+          alert('No matching destinations found for your visual inspiration within the given budget and preferences. Please try different criteria or remove the image/video.');
+        } else {
+          alert('No destinations found matching your criteria. Please try adjusting your preferences or budget.');
+        }
+        setLoading(false);
+        return;
+      }
+
       const { data: trip, error } = await supabase
         .from('trips')
         .insert({
