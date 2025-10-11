@@ -1,5 +1,5 @@
 import { jsPDF } from 'jspdf';
-import { ItineraryDay } from './llm';
+import { ItineraryDay } from './aiItinerary';
 
 export function exportItineraryToPDF(
   destinationName: string,
@@ -54,48 +54,31 @@ export function exportItineraryToPDF(
     doc.text(costText, margin, yPosition + 5);
     yPosition += 10;
 
-    doc.setFont('helvetica', 'italic');
-    const summaryLines = doc.splitTextToSize(day.summary, contentWidth - 10);
-    summaryLines.forEach((line: string) => {
-      if (yPosition > pageHeight - 30) {
-        doc.addPage();
-        yPosition = margin;
-      }
-      doc.text(line, margin + 5, yPosition);
-      yPosition += 5;
-    });
-    yPosition += 5;
-
     doc.setFont('helvetica', 'bold');
     doc.text('Activities:', margin, yPosition);
     yPosition += 6;
 
     doc.setFont('helvetica', 'normal');
-    day.activities.forEach((activity) => {
+    day.items.forEach((item) => {
       if (yPosition > pageHeight - 30) {
         doc.addPage();
         yPosition = margin;
       }
 
-      const activityText = `• ${activity.time} - ${activity.name}`;
+      const activityText = `• ${item.time} - ${item.activity} (${item.duration})`;
       const activityLines = doc.splitTextToSize(activityText, contentWidth - 10);
       activityLines.forEach((line: string) => {
         doc.text(line, margin + 5, yPosition);
         yPosition += 5;
       });
 
-      if (activity.description) {
-        const descLines = doc.splitTextToSize(`  ${activity.description}`, contentWidth - 15);
+      if (item.transit) {
         doc.setFontSize(9);
-        descLines.forEach((line: string) => {
-          if (yPosition > pageHeight - 30) {
-            doc.addPage();
-            yPosition = margin;
-          }
-          doc.text(line, margin + 10, yPosition);
-          yPosition += 4;
-        });
+        doc.setTextColor(100, 100, 100);
+        doc.text('  [Transit time]', margin + 10, yPosition);
+        yPosition += 4;
         doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
       }
       yPosition += 2;
     });
