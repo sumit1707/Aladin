@@ -127,19 +127,60 @@ CRITICAL BUDGET RULES:
 
 ⚙️ SELECTION & PLANNING RULES:
 
-1) 💰 BUDGET-FIRST & SCOPE-FIRST (HIGHEST PRIORITY):
-   Primary constraint: total trip budget ≤ ₹${budgetRange.max} per person
+1) 💰 BUDGET-FIRST & SCOPE-FIRST (ABSOLUTE HIGHEST PRIORITY):
+   ⚠️ CRITICAL: total trip budget MUST be ≤ ₹${budgetRange.max} per person
+   ⚠️ NO EXCEPTIONS - If any destination exceeds this, DO NOT INCLUDE IT
 
    Hotel tier selection (based on scope and budget):
    ${travelScope === 'National' ? `India hotels: ${budgetRange.hotelIndia}` : `International hotels: ${budgetRange.hotelIntl}`}
 
-   Calculate realistic costs:
-   - Stay: ${budgetRange.hotelIndia} × ${formData.days} nights
-   - Food: realistic meals for ${formData.days} days
-   - Transport: ${formData.travelMode} from ${formData.startLocation}
-   - Activities: entry fees, tours
+   MANDATORY COST CALCULATIONS (ALL INCLUSIVE):
+   You MUST include ALL these costs in your calculation:
 
-   If destination exceeds ₹${budgetRange.max}, DO NOT include it.
+   A) TRAVEL/TRANSPORT TO DESTINATION (${formData.travelMode} from ${formData.startLocation}):
+      ${formData.travelMode === 'Flight' ? `
+      - Flight: Round-trip airfare (economy class)
+        * Domestic India: ₹3,000-₹15,000 depending on distance
+        * International: ₹15,000-₹50,000 depending on destination
+        * Calculate based on actual distance from ${formData.startLocation}` : ''}
+      ${formData.travelMode === 'Train' ? `
+      - Train: Round-trip train fare (2AC/3AC class)
+        * Short distance (<500km): ₹1,000-₹2,500
+        * Medium distance (500-1500km): ₹2,500-₹5,000
+        * Long distance (>1500km): ₹5,000-₹8,000
+        * Calculate based on actual distance from ${formData.startLocation}` : ''}
+      ${formData.travelMode === 'Bus' ? `
+      - Bus: Round-trip bus fare (sleeper/semi-sleeper)
+        * Short distance (<300km): ₹500-₹1,500
+        * Medium distance (300-800km): ₹1,500-₹3,000
+        * Long distance (>800km): ₹3,000-₹5,000
+        * Calculate based on actual distance from ${formData.startLocation}` : ''}
+
+   B) ACCOMMODATION (${formData.days} nights):
+      - Hotel: ${travelScope === 'National' ? budgetRange.hotelIndia : budgetRange.hotelIntl} × ${formData.days} nights
+      - CALCULATE: [hotel_rate_per_night] × ${formData.days}
+
+   C) FOOD (${formData.days} days):
+      - Budget tier: ₹800-₹1,200 per day
+      - Mid-range tier: ₹1,500-₹2,500 per day
+      - Premium tier: ₹2,500-₹4,000 per day
+      - CALCULATE: [daily_food_cost] × ${formData.days}
+
+   D) LOCAL TRANSPORT (within destination):
+      - Taxis/Autos/Local buses: ₹500-₹1,500 per day
+      - CALCULATE: [local_transport] × ${formData.days}
+
+   E) ACTIVITIES & ENTRY FEES:
+      - Entry tickets, tours, experiences
+      - Typical: ₹2,000-₹8,000 for entire trip
+
+   TOTAL PER PERSON = A + B + C + D + E
+
+   ⚠️ VERIFICATION RULE:
+   IF (TOTAL PER PERSON > ₹${budgetRange.max}) {
+      DO NOT INCLUDE THIS DESTINATION
+      FIND ANOTHER OPTION
+   }
 
 2) 🌐 NATIONAL vs INTERNATIONAL:
    travel_scope = ${travelScope}
@@ -232,11 +273,13 @@ RETURN ONLY VALID JSON:
       "approx_budget": {
         "total_per_person": 35000,
         "breakdown": {
+          "travel_to_destination": 10000,
           "stay": 12000,
           "food": 8000,
-          "transport": 10000,
-          "activities": 5000
-        }
+          "local_transport": 3000,
+          "activities": 2000
+        },
+        "calculation_note": "travel_to_destination + stay + food + local_transport + activities = total_per_person"
       },
       "pros": ["Specific advantage 1", "Specific advantage 2"],
       "con": "One realistic drawback",
@@ -249,19 +292,61 @@ RETURN ONLY VALID JSON:
   ]
 }
 
-⚠️ CRITICAL FINAL CHECKS:
-Before returning, VERIFY:
-1. ✓ EVERY "total_per_person" ≤ ₹${budgetRange.max} (NO EXCEPTIONS)
-2. ✓ All video_link URLs use YouTube SEARCH format (not specific video IDs)
-3. ✓ Travel scope matches (${travelScope} only)
-4. ✓ Duration appropriate for distance (${formData.days} days from ${formData.startLocation})
-5. ✓ Weather safe for ${formData.month}
-6. ✓ At least one hidden gem if possible
+⚠️ MANDATORY 4-PASS VERIFICATION SYSTEM:
+YOU MUST CHECK EACH DESTINATION 4 TIMES BEFORE INCLUDING IT:
 
-If fewer than 5 fit budget: return only those (4, 3, 2, or 1)
-If NONE fit budget: return {"destinations": [], "note": "No destinations within ₹${budgetRange.max}. Try: increase budget to ₹${Math.ceil(budgetRange.max * 1.5)}, reduce to ${Math.max(2, formData.days - 1)} days, or switch to ${travelScope === 'National' ? 'nearby India destinations' : 'domestic travel'}."}
+🔍 PASS 1 - BUDGET CALCULATION CHECK:
+   For EACH destination, manually calculate:
+   - ${formData.travelMode} cost from ${formData.startLocation}: ₹____
+   - Hotel (${formData.days} nights): ₹____
+   - Food (${formData.days} days): ₹____
+   - Local transport (${formData.days} days): ₹____
+   - Activities: ₹____
+   - TOTAL: ₹____
 
-Quality > Quantity. Accuracy > Completeness.`;
+   Is TOTAL ≤ ₹${budgetRange.max}? YES/NO
+   If NO → REJECT THIS DESTINATION
+
+🔍 PASS 2 - SCOPE & DISTANCE CHECK:
+   - Is destination in ${travelScope === 'National' ? 'India' : 'international (non-India)'}? YES/NO
+   - For ${formData.days} days, is travel time reasonable from ${formData.startLocation}? YES/NO
+   - ${formData.days <= 3 ? 'Is it within 5-6 hours travel time? YES/NO' : 'Does trip leave 60%+ time for enjoyment? YES/NO'}
+
+   If any NO → REJECT THIS DESTINATION
+
+🔍 PASS 3 - ALIGNMENT CHECK:
+   - Weather safe for ${formData.month}? YES/NO
+   - Matches mood: ${formData.mood}? YES/NO
+   - Matches theme: ${formData.theme.join(', ')}? YES/NO
+   - Matches travel type: ${formData.groupType}? YES/NO
+
+   If major misalignment → REJECT THIS DESTINATION
+
+🔍 PASS 4 - FINAL ACCURACY CHECK:
+   - All YouTube links use search format (not video IDs)? YES/NO
+   - No invented hotel names or exact fares? YES/NO
+   - Weather data labeled "typical for ${formData.month}"? YES/NO
+   - Budget breakdown adds up correctly? YES/NO
+
+   If any NO → REJECT THIS DESTINATION
+
+📊 FINAL DECISION:
+   - Count destinations that passed all 4 checks: ____
+   - If 5+ passed: return top 5 by fit_score
+   - If 4 passed: return all 4
+   - If 3 passed: return all 3
+   - If 2 passed: return all 2
+   - If 1 passed: return only 1
+   - If 0 passed: return {"destinations": [], "note": "No destinations found within ₹${budgetRange.max} budget for ${formData.days} days from ${formData.startLocation} via ${formData.travelMode}. Suggestions: (1) Increase budget to ₹${Math.ceil(budgetRange.max * 1.5)}, (2) Reduce to ${Math.max(2, formData.days - 1)} days, (3) Choose ${travelScope === 'National' ? 'closer destinations' : 'domestic travel'}, (4) Switch to ${formData.travelMode === 'Flight' ? 'train/bus for lower costs' : 'flight for distant destinations'}."}
+
+🚫 ABSOLUTE RULES - NO COMPROMISE:
+   1. NEVER return a destination with total_per_person > ₹${budgetRange.max}
+   2. NEVER skip the 4-pass verification
+   3. NEVER fabricate costs to fit budget
+   4. NEVER include destinations with unsafe weather
+   5. If budget is too tight, return EMPTY ARRAY with helpful note
+
+Quality > Quantity. Accuracy is NON-NEGOTIABLE.`;
 };
 
 export const generateDestinations = async (formData: TripFormData): Promise<AIDestinationResponse> => {
@@ -312,12 +397,74 @@ export const generateDestinations = async (formData: TripFormData): Promise<AIDe
       ? 50000
       : 250000;
 
-    if (result.destinations && Array.isArray(result.destinations)) {
-      result.destinations = result.destinations.filter(
-        (dest: DestinationOption) => dest.approx_budget.total_per_person <= budgetMax
-      );
+    // CRITICAL POST-PROCESSING VALIDATION WITH 4-STEP CHECK
+    console.log('🔍 Starting strict 4-step budget validation...');
+    console.log(`📊 Budget constraint: ₹${budgetMax} per person for ${formData.days} days via ${formData.travelMode} from ${formData.startLocation}`);
 
-      console.log(`Budget filter applied: Max budget ₹${budgetMax}, Destinations matching: ${result.destinations.length}`);
+    if (result.destinations && Array.isArray(result.destinations)) {
+      const validatedDestinations = result.destinations.filter((dest: DestinationOption) => {
+        const total = dest.approx_budget?.total_per_person || 0;
+        const breakdown = dest.approx_budget?.breakdown;
+
+        console.log(`\n🔍 Validating: ${dest.title}`);
+
+        // STEP 1: Verify breakdown exists and has all components
+        if (!breakdown) {
+          console.warn(`❌ REJECTED ${dest.title}: Missing budget breakdown`);
+          return false;
+        }
+
+        // STEP 2: Verify breakdown includes travel costs
+        const travelCost = breakdown.travel_to_destination || breakdown.transport || 0;
+        if (travelCost === 0) {
+          console.warn(`❌ REJECTED ${dest.title}: Missing travel/transport cost to destination`);
+          return false;
+        }
+
+        // STEP 3: Verify budget math is correct
+        const calculatedTotal =
+          travelCost +
+          (breakdown.stay || 0) +
+          (breakdown.food || 0) +
+          (breakdown.local_transport || 0) +
+          (breakdown.activities || 0);
+
+        console.log(`   Travel to destination: ₹${travelCost}`);
+        console.log(`   Stay (${formData.days} nights): ₹${breakdown.stay || 0}`);
+        console.log(`   Food (${formData.days} days): ₹${breakdown.food || 0}`);
+        console.log(`   Local transport: ₹${breakdown.local_transport || 0}`);
+        console.log(`   Activities: ₹${breakdown.activities || 0}`);
+        console.log(`   Calculated total: ₹${calculatedTotal}`);
+        console.log(`   Stated total: ₹${total}`);
+
+        if (Math.abs(calculatedTotal - total) > 500) {
+          console.warn(`⚠️ Budget mismatch for ${dest.title}: fixing from ₹${total} to ₹${calculatedTotal}`);
+          dest.approx_budget.total_per_person = calculatedTotal;
+        }
+
+        const finalTotal = dest.approx_budget.total_per_person;
+
+        // STEP 4: Final budget check
+        if (finalTotal > budgetMax) {
+          console.warn(`❌ REJECTED ${dest.title}: ₹${finalTotal} exceeds budget limit ₹${budgetMax}`);
+          return false;
+        }
+
+        console.log(`✅ APPROVED ${dest.title}: ₹${finalTotal} within budget ₹${budgetMax}`);
+        return true;
+      });
+
+      result.destinations = validatedDestinations;
+
+      console.log(`\n📊 FINAL RESULT: ${validatedDestinations.length} destinations passed strict validation`);
+
+      if (validatedDestinations.length === 0) {
+        console.warn('⚠️ NO DESTINATIONS within budget after validation');
+        return {
+          destinations: [],
+          note: `No destinations found within ₹${budgetMax} budget for ${formData.days} days from ${formData.startLocation} via ${formData.travelMode}. This budget may be too tight for the selected parameters. Suggestions: (1) Increase budget to ₹${Math.ceil(budgetMax * 1.5)}, (2) Reduce trip duration to ${Math.max(2, formData.days - 1)} days, (3) Choose closer destinations to reduce ${formData.travelMode.toLowerCase()} costs, (4) Switch travel mode to ${formData.travelMode === 'Flight' ? 'train/bus for lower costs' : 'flight if available'}.`
+        };
+      }
     }
 
     return result;
