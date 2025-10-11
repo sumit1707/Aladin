@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Ensure select dropdown options have light, visible backgrounds */
+select option {
+  background-color: #ffffff;
+  color: #000000;
+  padding: 8px;
+}
+
+select option:hover {
+  background-color: #e0e0e0;
+}
+
+/* Dark mode support for better contrast */
+@media (prefers-color-scheme: dark) {
+  select option {
+    background-color: #f5f5f5;
+    color: #1a1a1a;
+  }
+
+  select option:hover {
+    background-color: #d0d0d0;
+  }
+}
