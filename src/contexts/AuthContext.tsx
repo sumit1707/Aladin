@@ -15,6 +15,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSigningUp, setIsSigningUp] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -26,14 +27,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       (async () => {
         if (event === 'SIGNED_OUT') {
           setUser(null);
-        } else if (event === 'SIGNED_IN' && session) {
+        } else if (event === 'SIGNED_IN' && session && !isSigningUp) {
           setUser(session.user);
         }
       })();
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [isSigningUp]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
@@ -44,19 +45,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signUp = async (email: string, password: string, fullName?: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
+    setIsSigningUp(true);
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
         },
-      },
-    });
-    if (error) throw error;
+      });
+      if (error) throw error;
 
-    if (data.session) {
-      await supabase.auth.signOut();
+      if (data.session) {
+        await supabase.auth.signOut();
+      }
+    } finally {
+      setIsSigningUp(false);
     }
   };
 
