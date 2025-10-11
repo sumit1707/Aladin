@@ -18,6 +18,7 @@ interface HotelOptionsProps {
     specialRequests: string;
     numberOfHotels: number;
     numberOfCars: number;
+    hasPets?: boolean;
   };
   itinerary: ItineraryDay[];
   travelMode: string;
@@ -526,6 +527,10 @@ export default function HotelOptions({
                   <div>
                     <div className="text-emerald-300/70 text-sm mb-1">Number of Cars</div>
                     <div className="text-emerald-300 font-semibold text-base">{selectedCars}</div>
+                  </div>
+                  <div>
+                    <div className="text-emerald-300/70 text-sm mb-1">Pets</div>
+                    <div className="text-emerald-300 font-semibold text-base">{bookingDetails.hasPets ? 'Yes' : 'No'}</div>
                   </div>
                   {bookingDetails.specialRequests && (
                     <div className="md:col-span-2">

@@ -94,6 +94,7 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-3">
+          {/* Customer Details */}
           <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-2">
             <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-1.5 text-xs">
               <UserIcon className="w-3.5 h-3.5" />
@@ -127,6 +128,7 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
             </div>
           </div>
 
+          {/* Travelers Count */}
           <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-2">
             <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-1.5 text-xs">
               <Users className="w-3.5 h-3.5" />
@@ -199,6 +201,7 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
             </div>
           </div>
 
+          {/* Pets */}
           <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-2">
             <h4 className="text-emerald-400 font-semibold mb-2 flex items-center gap-1.5 text-xs">
               <PawPrint className="w-3.5 h-3.5" />
@@ -230,6 +233,7 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
             </div>
           </div>
 
+          {/* Room Type */
           <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-2">
             <h4 className="text-emerald-400 font-semibold mb-1.5 flex items-center gap-1.5 text-xs">
               <Bed className="w-3.5 h-3.5" />
@@ -317,6 +321,7 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
             </div>
           </div>
 
+          {/* Special Requests */}
           <div className="bg-black/40 border border-emerald-500/30 rounded-lg p-2">
             <h4 className="text-emerald-400 font-semibold mb-1.5 flex items-center gap-1.5 text-xs">
               <MessageSquare className="w-3.5 h-3.5" />
@@ -331,6 +336,7 @@ export default function BookingForm({ onClose, onSubmit, destinationName, tripBu
             />
           </div>
 
+          {/* Submit Buttons */}
           <div className="flex gap-1.5">
             <button
               type="submit"

@@ -311,6 +311,7 @@ function App() {
           customer_email: customerDetails.email,
           customer_phone: customerDetails.phone,
           hotel_options: hotelResponse.hotels,
+          has_pets: bookingData.hasPets,
           status: 'pending'
         });
 
@@ -477,7 +478,8 @@ function App() {
             vehicleType: currentBookingData.vehicleType,
             specialRequests: currentBookingData.specialRequests,
             numberOfHotels: currentBookingData.numberOfHotels,
-            numberOfCars: currentBookingData.numberOfCars
+            numberOfCars: currentBookingData.numberOfCars,
+            hasPets: currentBookingData.hasPets
           }}
           itinerary={itinerary.itinerary}
           travelMode={formData.travelMode}
