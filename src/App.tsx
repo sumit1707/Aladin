@@ -374,8 +374,6 @@ function App() {
       setCurrentBookingData(bookingData);
       setHotelOptions(hotelResponse.hotels || []);
       setShowHotelOptions(true);
-
-      alert('Booking request submitted successfully! Our team will contact you shortly at ' + customerDetails.email);
     } catch (error) {
       console.error('Error processing booking:', error);
       alert('Failed to process booking request: ' + (error instanceof Error ? error.message : 'Unknown error') + '. Please try again.');

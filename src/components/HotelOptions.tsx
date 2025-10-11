@@ -115,10 +115,9 @@ export default function HotelOptions({
     setShowConfirmationModal(true);
   };
 
-  const handleCloseConfirmation = async () => {
+  const handleCloseConfirmation = () => {
     setShowConfirmationModal(false);
     onClose();
-    await onLogout();
   };
 
   const handleContactAgent = () => {
