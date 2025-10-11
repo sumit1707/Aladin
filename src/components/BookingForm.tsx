@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Users, Bed, Car, MessageSquare, User as UserIcon, Mail, Phone, PawPrint } from 'lucide-react';
+import { X, Users, Bed, Car, MessageSquare, User as UserIcon, Mail, Phone, PawPrint, ArrowLeft } from 'lucide-react';
 
 interface BookingFormProps {
   onClose: () => void;
@@ -106,12 +106,20 @@ export default function BookingForm({
       <div className="bg-gradient-to-br from-emerald-900/95 to-black/95 border-2 border-emerald-500 rounded-xl shadow-2xl shadow-emerald-500/30 max-w-md w-full p-3 relative my-6">
         <button
           onClick={onClose}
+          className="absolute top-2 left-2 text-emerald-300 hover:text-emerald-100 transition-colors flex items-center gap-1 text-xs font-semibold"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </button>
+
+        <button
+          onClick={onClose}
           className="absolute top-2 right-2 text-emerald-300 hover:text-emerald-100 transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <h3 className="text-lg font-bold text-emerald-400 mb-1">Booking Details</h3>
+        <h3 className="text-lg font-bold text-emerald-400 mb-1 mt-4">Hotel Recommendations & Booking Details</h3>
         <p className="text-emerald-300 text-xs mb-3">
           Trip to <span className="font-semibold text-emerald-400">{destinationName}</span>
         </p>
