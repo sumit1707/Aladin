@@ -11,18 +11,18 @@ import { useAuth } from './contexts/AuthContext';
 import { supabase } from './lib/supabase';
 import {
   TripFormData,
-  DestinationOption,
   ItineraryResponse,
   HotelOption,
-  generateDestinationPrompt,
   generateItineraryPrompt,
   generateHotelPrompt,
   mockLLMCall
 } from './lib/llm';
+import { generateDestinations, DestinationOption } from './lib/aiDestinations';
+import AIDestinationResults from './components/AIDestinationResults';
 import { exportItineraryToPDF } from './lib/pdfExport';
 import { Plane, LogOut, BookmarkCheck } from 'lucide-react';
 
-type AppStep = 'form' | 'destinations' | 'itinerary' | 'saved-trips';
+type AppStep = 'form' | 'ai-destinations' | 'destinations' | 'itinerary' | 'saved-trips';
 type AuthView = 'login' | 'signup';
 
 function App() {
@@ -60,8 +60,7 @@ function App() {
     setLoading(true);
 
     try {
-      const prompt = generateDestinationPrompt(data);
-      const response = await mockLLMCall(prompt, false, data.travelMode);
+      const response = await generateDestinations(data);
 
       const { data: trip, error } = await supabase
         .from('trips')
@@ -88,11 +87,11 @@ function App() {
 
       await supabase.from('itineraries').insert({
         trip_id: trip?.id,
-        destination_options: response.options,
+        destination_options: response.destinations,
       });
 
-      setDestinations(response.options);
-      setStep('destinations');
+      setDestinations(response.destinations);
+      setStep('ai-destinations');
     } catch (error) {
       console.error('Error generating destinations:', error);
       alert('Failed to generate destinations. Please try again.');
@@ -407,6 +406,14 @@ function App() {
             <TripForm onSubmit={handleFormSubmit} loading={loading} />
           )}
 
+          {step === 'ai-destinations' && !loading && (
+            <AIDestinationResults
+              destinations={destinations}
+              onSelectDestination={handleDestinationSelect}
+              onBack={handleStartNew}
+            />
+          )}
+
           {step === 'destinations' && !loading && (
             <DestinationCards
               options={destinations}
@@ -441,7 +448,7 @@ function App() {
             <div className="bg-emerald-900/30 backdrop-blur-md border-2 border-emerald-500/40 rounded-xl shadow-lg p-12 text-center">
               <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-emerald-500 mx-auto mb-4"></div>
               <p className="text-emerald-300 text-lg">
-                {step === 'destinations' ? 'Finding perfect destinations for you...' : 'Creating your personalized itinerary...'}
+                {step === 'ai-destinations' || step === 'destinations' ? 'AI is curating your perfect destinations...' : 'Creating your personalized itinerary...'}
               </p>
             </div>
           )}

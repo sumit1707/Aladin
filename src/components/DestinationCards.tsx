@@ -1,4 +1,4 @@
-import { DestinationOption } from '../lib/llm';
+import { DestinationOption } from '../lib/aiDestinations';
 import { MapPin, DollarSign, Calendar, Plane, ThumbsUp, ThumbsDown, ArrowLeft, Video, Clock } from 'lucide-react';
 
 interface DestinationCardsProps {
@@ -72,24 +72,24 @@ export default function DestinationCards({ options, onSelect, onBack }: Destinat
               <div className="bg-emerald-900/30 rounded-lg p-3 mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-semibold text-emerald-300 flex items-center">
-                    <DollarSign className="w-4 h-4 mr-1" /> Budget (3-5 days)
+                    <DollarSign className="w-4 h-4 mr-1" /> Budget
                   </span>
                   <span className="text-lg font-bold text-emerald-400">
-                    ₹{option.approx_budget_for_3_to_5_days.total_per_person.toLocaleString('en-IN')}
+                    ₹{option.approx_budget.total_per_person.toLocaleString('en-IN')}
                   </span>
                 </div>
                 <div className="text-xs text-emerald-400/70 space-y-1">
                   <div className="flex justify-between">
                     <span>Stay:</span>
-                    <span>₹{option.approx_budget_for_3_to_5_days.breakdown.stay.toLocaleString('en-IN')}</span>
+                    <span>₹{option.approx_budget.breakdown.stay.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Food:</span>
-                    <span>₹{option.approx_budget_for_3_to_5_days.breakdown.food.toLocaleString('en-IN')}</span>
+                    <span>₹{option.approx_budget.breakdown.food.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Transport:</span>
-                    <span>₹{option.approx_budget_for_3_to_5_days.breakdown.transport.toLocaleString('en-IN')}</span>
+                    <span>₹{option.approx_budget.breakdown.transport.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               </div>
