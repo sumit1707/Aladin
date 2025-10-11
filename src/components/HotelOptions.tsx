@@ -363,7 +363,7 @@ export default function HotelOptions({
                   : 'text-emerald-300/70 hover:text-emerald-300'
               }`}
             >
-              Hotels
+              Hotel Recommended
             </button>
             <button
               onClick={() => setActiveTab('details')}
@@ -373,7 +373,7 @@ export default function HotelOptions({
                   : 'text-emerald-300/70 hover:text-emerald-300'
               }`}
             >
-              Details
+              Confirm Your Input
             </button>
             <button
               onClick={() => setActiveTab('hotel-count')}
@@ -383,7 +383,7 @@ export default function HotelOptions({
                   : 'text-emerald-300/70 hover:text-emerald-300'
               }`}
             >
-              Hotels
+              Any Recommended Hotel and Numbers
             </button>
             <button
               onClick={() => setActiveTab('car-count')}
@@ -393,7 +393,7 @@ export default function HotelOptions({
                   : 'text-emerald-300/70 hover:text-emerald-300'
               }`}
             >
-              Cars
+              Any Recommended Car and Number
             </button>
           </div>
         </div>
