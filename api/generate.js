@@ -20,6 +20,13 @@ export default async function handler(req, res) {
       input: prompt,
     });
 
+    const apiKey =
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY;
+
+    if (!apiKey) throw new Error("Gemini API key missing");
+
+     const genAI = new GoogleGenerativeAI(apiKey);
+
     const text =
       completion.output_text ||
       completion?.choices?.[0]?.message?.content?.[0]?.text ||
