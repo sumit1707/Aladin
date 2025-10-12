@@ -1,12 +1,19 @@
+// api/generate.js
 import OpenAI from "openai";
 
 export default async function handler(req, res) {
-  try {
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  if (req.method !== "POST") {
+    return res.status(405).json({ ok: false, error: "METHOD_NOT_ALLOWED" });
+  }
 
-    // Extract a test query: /api/generate?q=hello
-    const url = new URL(req.url, `http://${req.headers.host}`);
-    const prompt = url.searchParams.get("q") || "Say hello in one short line.";
+  try {
+    // Read JSON body safely
+    const chunks = [];
+    for await (const chunk of req) chunks.push(chunk);
+    const body = JSON.parse(Buffer.concat(chunks).toString() || "{}");
+    const prompt = body.prompt || "Say hello in one short line.";
+
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
     const completion = await client.responses.create({
       model: "gpt-4o-mini",
@@ -15,14 +22,14 @@ export default async function handler(req, res) {
 
     const text =
       completion.output_text ||
-      completion.choices?.[0]?.message?.content?.[0]?.text ||
+      completion?.choices?.[0]?.message?.content?.[0]?.text ||
       JSON.stringify(completion);
 
-    res.status(200).json({ ok: true, text });
+    return res.status(200).json({ ok: true, text });
   } catch (error) {
     console.error("OPENAI ERROR:", error);
-    res
+    return res
       .status(500)
-      .json({ ok: false, error: error.message || "Internal Server Error" });
+      .json({ ok: false, error: "OPENAI_FAILED", message: String(error?.message || error) });
   }
 }
