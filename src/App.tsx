@@ -12,6 +12,7 @@ import { BookingFormData } from './components/BookingForm';
 import { useAuth } from './contexts/AuthContext';
 import AITest from "./components/AITest";
 import { supabase } from './lib/supabase';
+import { generateDestinationsFromForm } from "./lib/ai";
 import { User } from '@supabase/supabase-js';
 import AITest from "./components/AITest";
 import {
@@ -94,8 +95,6 @@ function App() {
     setLoading(true);
 
     try {
-      import { generateDestinationsFromForm } from "./lib/ai"; // ensure this import is at the top
-      // ...
       const response = await generateDestinationsFromForm(data);
 
       // Check if AI detected invalid image/video content
