@@ -10,6 +10,7 @@ import HotelOptions from './components/HotelOptions';
 import ErrorModal from './components/ErrorModal';
 import { BookingFormData } from './components/BookingForm';
 import { useAuth } from './contexts/AuthContext';
+import AITest from "./components/AITest";
 import { supabase } from './lib/supabase';
 import { User } from '@supabase/supabase-js';
 import AITest from "./components/AITest";
@@ -577,14 +578,7 @@ function App() {
   );
 }
 
-function App() {
-  return (
-    <div>
-      {/* your existing UI */}
-      <AITest />
-    </div>
-  );
-}
+
 
 export default App;
 
