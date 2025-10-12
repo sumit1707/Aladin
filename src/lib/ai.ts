@@ -1,10 +1,14 @@
 // src/lib/ai.ts
-export async function generateFromAI(prompt: string) {
-  const res = await fetch("/api/generate?q=" + encodeURIComponent(prompt));
+export async function generateFromAI(prompt) {
+  const res = await fetch("/api/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt }),
+  });
   if (!res.ok) throw new Error("AI request failed");
   const data = await res.json();
   if (!data.ok) throw new Error(data.message || "AI service error");
-  return data.text as string;
+  return data.text;
 }
 // Turn form data into a structured destinations response from the AI
 export async function generateDestinationsFromForm(data: any) {
