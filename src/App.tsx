@@ -12,7 +12,6 @@ import { BookingFormData } from './components/BookingForm';
 import { useAuth } from './contexts/AuthContext';
 import AITest from "./components/AITest";
 import { supabase } from './lib/supabase';
-import { generateDestinationsFromForm } from "./lib/ai";
 import { User } from '@supabase/supabase-js';
 import {
   TripFormData,
@@ -94,7 +93,7 @@ function App() {
     setLoading(true);
 
     try {
-      const response = await generateDestinationsFromForm(data);
+      const response = await generateDestinations(data);
 
       // Check if AI detected invalid image/video content
       if (response.error === 'invalid_content') {
