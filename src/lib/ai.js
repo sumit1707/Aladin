@@ -1,12 +1,19 @@
 // src/lib/ai.js
+
+// 1) Low-level call: always POST JSON to /api/generate
 export async function generateFromAI(prompt) {
-  const res = await fetch("/api/generate?q=" + encodeURIComponent(prompt));
+  const res = await fetch("/api/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt }),
+  });
   if (!res.ok) throw new Error("AI request failed");
   const data = await res.json();
   if (!data.ok) throw new Error(data.message || "AI service error");
   return data.text;
 }
-// Turn form data into a structured destinations response from the AI
+
+// 2) High-level helper used by your form submit
 export async function generateDestinationsFromForm(data) {
   const prompt = `
 You are a travel planner. Based on the user's preferences below, return ONLY a compact JSON object with this exact shape:
