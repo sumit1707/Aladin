@@ -94,7 +94,9 @@ function App() {
     setLoading(true);
 
     try {
-      const response = await generateDestinations(data);
+      import { generateDestinationsFromForm } from "./lib/ai"; // ensure this import is at the top
+      // ...
+      const response = await generateDestinationsFromForm(data);
 
       // Check if AI detected invalid image/video content
       if (response.error === 'invalid_content') {
