@@ -14,7 +14,6 @@ import AITest from "./components/AITest";
 import { supabase } from './lib/supabase';
 import { generateDestinationsFromForm } from "./lib/ai";
 import { User } from '@supabase/supabase-js';
-import AITest from "./components/AITest";
 import {
   TripFormData,
   HotelOption,
